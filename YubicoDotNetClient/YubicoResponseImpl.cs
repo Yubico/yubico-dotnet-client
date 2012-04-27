@@ -121,5 +121,14 @@ namespace YubicoDotNetClient
         {
             return responseMap;
         }
+
+        public String getPublicId()
+        {
+            if (otp == null || !YubicoClient.isOtpValidFormat(otp))
+            {
+                return null;
+            }
+            return otp.Substring(0, otp.Length - 32);
+        }
     }
 }

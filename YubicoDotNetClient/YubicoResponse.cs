@@ -17,5 +17,6 @@ namespace YubicoDotNetClient
         String getOtp();
         String getNonce();
         SortedDictionary<String, String> getResponseMap();
+        String getPublicId();
     }
 }

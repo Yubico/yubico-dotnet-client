@@ -36,6 +36,18 @@ using System.Security.Cryptography;
 
 namespace YubicoDotNetClient
 {
+    /// <summary>
+    /// Validation client for the Yubico validation protocol version 2.0
+    /// </summary>
+    /// <example>
+    /// YubicoClient client = new YubicoClient(clientId, apiKey);
+    /// YubicoResponse response = client.verify(otp);
+    /// if(response.getStatus() == YubicoResponseStatus.OK) {
+    ///   // validation succeeded
+    /// } else {
+    ///  // validation failure
+    /// }
+    /// </example>
     public class YubicoClient
     {
         private String clientId;
@@ -49,33 +61,59 @@ namespace YubicoDotNetClient
                                        "https://api4.yubico.com/wsapi/2.0/verify",
                                        "https://api5.yubico.com/wsapi/2.0/verify"
                                    };
-
+        /// <summary>
+        /// Constructor for YubicoClient with clientId.
+        /// </summary>
+        /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(String clientId)
         {
             this.clientId = clientId;
         }
 
+        /// <summary>
+        /// Constructor for YubicoClient with clientId and apiKey.
+        /// </summary>
+        /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
+        /// <param name="apiKey">ApiKey from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(String clientId, String apiKey)
         {
             this.clientId = clientId;
             setApiKey(apiKey);
         }
 
+        /// <summary>
+        /// Set the api key
+        /// </summary>
+        /// <param name="apiKey">ApiKey from http://upgrade.yubico.com/getapikey/ </param>
         public void setApiKey(String apiKey)
         {
             this.apiKey = Convert.FromBase64String(apiKey);
         }
 
+        /// <summary>
+        /// Set the desired sync level that the validation server should reach before sending reply.
+        /// </summary>
+        /// <param name="sync">Desired sync level in percent</param>
         public void setSync(String sync)
         {
             this.sync = sync;
         }
 
+        /// <summary>
+        /// Set the list of validation urls to do validation against.
+        /// </summary>
+        /// <param name="urls">list of urls to do validation to</param>
         public void setUrls(String[] urls)
         {
             this.apiUrls = urls;
         }
 
+        /// <summary>
+        /// Do verification of OTP
+        /// </summary>
+        /// <param name="otp">The OTP from a YubiKey in modhex</param>
+        /// <returns>YubicoResponse indicating status of the request</returns>
+        /// <exception cref="YubicoValidationFailure"/>
         public YubicoResponse verify(String otp)
         {
             if (!isOtpValidFormat(otp))
@@ -181,6 +219,11 @@ namespace YubicoDotNetClient
 
         private static int OTP_MAXLENGTH = 48;
         private static int OTP_MINLENGTH = 32;
+        /// <summary>
+        /// Verify an OTP is valid format for authentication
+        /// </summary>
+        /// <param name="otp">The otp from a YubiKey in modhex.</param>
+        /// <returns>bool indicating valid or not</returns>
         public static bool isOtpValidFormat(String otp)
         {
             if (otp.Length > OTP_MAXLENGTH || otp.Length < OTP_MINLENGTH)

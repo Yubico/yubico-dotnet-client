@@ -51,9 +51,17 @@ namespace YubicoDotNetClient
             {
                 queryMap.Add("sync", sync);
             }
-            String query = "?";
+            String query = null;
             foreach (KeyValuePair<String, String> pair in queryMap)
             {
+                if (query == null)
+                {
+                    query = "?";
+                }
+                else
+                {
+                    query += "&";
+                }
                 query += pair.Key + "=" + pair.Value;
             }
 
@@ -67,6 +75,7 @@ namespace YubicoDotNetClient
             {
                 urls.Add(url + query);
             }
+            YubicoResponse response = YubicoValidate.validate(urls.ToArray());
 
             return false;
         }

@@ -84,7 +84,7 @@ namespace YubicoDotNetClient
                 String serverSignature = null;
                 foreach (KeyValuePair<String, String> pair in response.getResponseMap())
                 {
-                    if (pair.Key.Equals("H"))
+                    if (pair.Key.Equals("h"))
                     {
                         serverSignature = pair.Value;
                     }

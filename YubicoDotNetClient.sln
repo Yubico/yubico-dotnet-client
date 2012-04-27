@@ -3,16 +3,41 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YubicoDotNetClient", "YubicoDotNetClient\YubicoDotNetClient.csproj", "{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YubicoDotNetTest", "YubicoDotNetTest\YubicoDotNetTest.csproj", "{7415A9A7-CC08-461B-980C-78477494C779}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41} = {5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}.Release|x86.ActiveCfg = Release|Any CPU
+		{7415A9A7-CC08-461B-980C-78477494C779}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Debug|x86.ActiveCfg = Debug|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Debug|x86.Build.0 = Debug|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Release|Any CPU.ActiveCfg = Release|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Release|Mixed Platforms.Build.0 = Release|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Release|x86.ActiveCfg = Release|x86
+		{7415A9A7-CC08-461B-980C-78477494C779}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

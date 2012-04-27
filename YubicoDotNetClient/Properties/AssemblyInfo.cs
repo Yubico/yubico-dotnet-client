@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("YubicoDotNetClient")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Validation client for the Yubico validation protocol version 2.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Yubico AB")]
 [assembly: AssemblyProduct("YubicoDotNetClient")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]

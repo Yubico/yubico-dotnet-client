@@ -44,6 +44,7 @@ namespace YubicoDotNetClient
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            request.Timeout = 15000;
             HttpWebResponse rawResponse = (HttpWebResponse)request.GetResponse();
             Stream dataStream = rawResponse.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);

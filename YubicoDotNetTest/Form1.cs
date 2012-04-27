@@ -38,7 +38,9 @@ namespace YubicoDotNetTest
             YubicoResponse response = client.verify(otp);
             if (response != null)
             {
-                output.Text = response.getStatus().ToString();
+                output.Text = response.getStatus().ToString() + "\r\n" +
+                    response.getPublicId() + "\r\n" +
+                    response.getUseCounter() + " " + response.getSessionCounter();
             }
         }
     }

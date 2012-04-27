@@ -23,14 +23,23 @@ namespace YubicoDotNetTest
             String otp = otpInput.Text;
             String clientId = clientInput.Text;
             String apiKey = keyInput.Text;
+            String sync = syncInput.Text;
+            output.Text = "";
 
             YubicoClient client = new YubicoClient(clientId);
             if (!apiKey.Equals(""))
             {
                 client.setApiKey(apiKey);
             }
+            if (!sync.Equals(""))
+            {
+                client.setSync(sync);
+            }
             YubicoResponse response = client.verify(otp);
-            output.Text = response.getStatus().ToString();
+            if (response != null)
+            {
+                output.Text = response.getStatus().ToString();
+            }
         }
     }
 }

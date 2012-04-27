@@ -36,6 +36,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.output = new System.Windows.Forms.Label();
+            this.syncInput = new System.Windows.Forms.TextBox();
+            this.syncLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // otpInput
@@ -47,7 +49,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(13, 107);
+            this.button1.Location = new System.Drawing.Point(12, 134);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -99,16 +101,34 @@
             // output
             // 
             this.output.AutoSize = true;
-            this.output.Location = new System.Drawing.Point(13, 157);
+            this.output.Location = new System.Drawing.Point(12, 189);
             this.output.Name = "output";
             this.output.Size = new System.Drawing.Size(0, 13);
             this.output.TabIndex = 7;
+            // 
+            // syncInput
+            // 
+            this.syncInput.Location = new System.Drawing.Point(13, 108);
+            this.syncInput.Name = "syncInput";
+            this.syncInput.Size = new System.Drawing.Size(100, 20);
+            this.syncInput.TabIndex = 8;
+            // 
+            // syncLabel
+            // 
+            this.syncLabel.AutoSize = true;
+            this.syncLabel.Location = new System.Drawing.Point(120, 108);
+            this.syncLabel.Name = "syncLabel";
+            this.syncLabel.Size = new System.Drawing.Size(29, 13);
+            this.syncLabel.TabIndex = 9;
+            this.syncLabel.Text = "sync";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.syncLabel);
+            this.Controls.Add(this.syncInput);
             this.Controls.Add(this.output);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -134,6 +154,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label output;
+        private System.Windows.Forms.TextBox syncInput;
+        private System.Windows.Forms.Label syncLabel;
     }
 }
 

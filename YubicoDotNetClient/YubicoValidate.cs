@@ -45,10 +45,26 @@ namespace YubicoDotNetClient
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             request.Timeout = 15000;
-            HttpWebResponse rawResponse = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse rawResponse;
+            try
+            {
+                rawResponse = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException)
+            {
+                return null;
+            }
             Stream dataStream = rawResponse.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
-            YubicoResponse response = new YubicoResponseImpl(reader.ReadToEnd());
+            YubicoResponse response;
+            try
+            {
+                response = new YubicoResponseImpl(reader.ReadToEnd());
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
             if (response.getStatus() == YubicoResponseStatus.REPLAYED_REQUEST)
             {
                 //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");

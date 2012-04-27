@@ -35,6 +35,11 @@ namespace YubicoDotNetClient
             this.sync = sync;
         }
 
+        public void setUrls(String[] urls)
+        {
+            this.apiUrls = urls;
+        }
+
         public YubicoResponse verify(String otp)
         {
             if (!isOtpValidFormat(otp))
@@ -50,7 +55,7 @@ namespace YubicoDotNetClient
             queryMap.Add("timestamp", "1");
             if (sync != null)
             {
-                queryMap.Add("sync", sync);
+                queryMap.Add("sl", sync);
             }
             String query = null;
             foreach (KeyValuePair<String, String> pair in queryMap)
@@ -68,7 +73,7 @@ namespace YubicoDotNetClient
 
             if (apiKey != null)
             {
-                query += "&h=" + doSignature(query, apiKey).Replace("+", "%2b");
+                query += "&h=" + doSignature(query, apiKey).Replace("+", "%2B");
             }
 
             List<String> urls = new List<String>();
@@ -78,7 +83,7 @@ namespace YubicoDotNetClient
             }
             YubicoResponse response = YubicoValidate.validate(urls.ToArray());
 
-            if (apiKey != null)
+            if (apiKey != null && response.getStatus() != YubicoResponseStatus.BAD_SIGNATURE)
             {
                 String responseString = null;
                 String serverSignature = null;
@@ -103,13 +108,13 @@ namespace YubicoDotNetClient
                     }
                 }
                 String clientSignature = doSignature(responseString, apiKey);
-                if (!clientSignature.Equals(serverSignature))
+                if (serverSignature != null && !clientSignature.Equals(serverSignature))
                 {
                     throw new YubicoValidationFailure("Server signature did not match our key.");
                 }
             }
 
-            if (response.getStatus() == YubicoResponseStatus.OK)
+            if (response != null && response.getStatus() == YubicoResponseStatus.OK)
             {
                 if (!response.getNonce().Equals(nonce))
                 {

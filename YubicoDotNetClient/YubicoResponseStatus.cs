@@ -7,6 +7,7 @@ namespace YubicoDotNetClient
 {
     public enum YubicoResponseStatus
     {
+        EMPTY,
         OK,
         BAD_OTP,
         REPLAYED_OTP,

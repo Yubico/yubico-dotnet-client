@@ -26,6 +26,7 @@ namespace YubicoDotNetClient
             responseMap = new SortedDictionary<String, String>();
             while ((line = reader.ReadLine()) != null)
             {
+                bool unhandled = false;
                 String[] parts = line.Split(new char[] { '=' }, 2);
                 switch (parts[0])
                 {
@@ -56,11 +57,18 @@ namespace YubicoDotNetClient
                     case "nonce":
                         nonce = parts[1];
                         break;
+                    default:
+                        unhandled = true;
+                        break;
                 }
-                if (parts[0] != "")
+                if (!unhandled)
                 {
                     responseMap.Add(parts[0], parts[1]);
                 }
+            }
+            if (status == YubicoResponseStatus.EMPTY)
+            {
+                throw new ArgumentException("Response doesn't look like a validation response.");
             }
         }
 

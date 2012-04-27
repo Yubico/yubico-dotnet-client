@@ -34,6 +34,7 @@ namespace YubicoDotNetClient
         private static YubicoResponse DoVerify(String url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             HttpWebResponse rawResponse = (HttpWebResponse)request.GetResponse();
             Stream dataStream = rawResponse.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);

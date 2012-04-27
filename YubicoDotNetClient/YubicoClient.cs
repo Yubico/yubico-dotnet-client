@@ -68,7 +68,7 @@ namespace YubicoDotNetClient
 
             if (apiKey != null)
             {
-                query += "&h=" + doSignature(query, apiKey);
+                query += "&h=" + doSignature(query, apiKey).Replace("+", "%2b");
             }
 
             List<String> urls = new List<String>();
@@ -127,7 +127,7 @@ namespace YubicoDotNetClient
         {
             HMACSHA1 hmac = new HMACSHA1(key);
             byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
-            return Convert.ToBase64String(signature).Replace("+", "%2B");
+            return Convert.ToBase64String(signature);
         }
 
         private static String generateNonce()

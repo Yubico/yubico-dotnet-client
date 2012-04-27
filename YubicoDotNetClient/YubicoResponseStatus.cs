@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YubicoDotNetClient
 {
-    enum YubicoResponseStatus
+    public enum YubicoResponseStatus
     {
         OK,
         BAD_OTP,

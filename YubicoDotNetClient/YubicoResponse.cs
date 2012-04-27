@@ -7,14 +7,15 @@ namespace YubicoDotNetClient
 {
     public interface YubicoResponse
     {
-        public String getH();
-        public String getT();
-        public YubicoResponseStatus getStatus();
-        public int getTimestamp();
-        public int getSessionCounter();
-        public int getUseCounter();
-        public String getSync();
-        public String getOtp();
-        public String getNonce();
+        String getH();
+        String getT();
+        YubicoResponseStatus getStatus();
+        int getTimestamp();
+        int getSessionCounter();
+        int getUseCounter();
+        String getSync();
+        String getOtp();
+        String getNonce();
+        SortedDictionary<String, String> getResponseMap();
     }
 }

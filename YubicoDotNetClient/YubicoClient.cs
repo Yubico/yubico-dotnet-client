@@ -35,16 +35,17 @@ namespace YubicoDotNetClient
             this.sync = sync;
         }
 
-        public bool verify(String otp)
+        public YubicoResponse verify(String otp)
         {
             if (!isOtpValidFormat(otp))
             {
                 throw new FormatException("otp format is invalid");
             }
 
+            String nonce = generateNonce();
             SortedDictionary<String, String> queryMap = new SortedDictionary<String, String>();
             queryMap.Add("id", clientId);
-            queryMap.Add("nonce", generateNonce());
+            queryMap.Add("nonce", nonce);
             queryMap.Add("otp", otp);
             queryMap.Add("timestamp", "1");
             if (sync != null)
@@ -56,7 +57,7 @@ namespace YubicoDotNetClient
             {
                 if (query == null)
                 {
-                    query = "?";
+                    query = "";
                 }
                 else
                 {
@@ -73,11 +74,53 @@ namespace YubicoDotNetClient
             List<String> urls = new List<String>();
             foreach (String url in apiUrls)
             {
-                urls.Add(url + query);
+                urls.Add(url + "?" + query);
             }
             YubicoResponse response = YubicoValidate.validate(urls.ToArray());
 
-            return false;
+            if (apiKey != null)
+            {
+                String responseString = null;
+                String serverSignature = null;
+                foreach (KeyValuePair<String, String> pair in response.getResponseMap())
+                {
+                    if (pair.Key.Equals("H"))
+                    {
+                        serverSignature = pair.Value;
+                    }
+                    else
+                    {
+
+                        if (responseString == null)
+                        {
+                            responseString = "";
+                        }
+                        else
+                        {
+                            responseString += "&";
+                        }
+                        responseString += pair.Key + "=" + pair.Value;
+                    }
+                }
+                String clientSignature = doSignature(responseString, apiKey);
+                if (!clientSignature.Equals(serverSignature))
+                {
+                    throw new YubicoValidationFailure("Server signature did not match our key.");
+                }
+            }
+
+            if (response.getStatus() == YubicoResponseStatus.OK)
+            {
+                if (!response.getNonce().Equals(nonce))
+                {
+                    throw new YubicoValidationFailure("Nonce in request and response does not match, man in the middle?");
+                }
+                else if (!response.getOtp().Equals(otp))
+                {
+                    throw new YubicoValidationFailure("OTP in request and response does not match, man in the middle?");
+                }
+            }
+            return response;
         }
 
         private static String doSignature(String message, byte[] key)

@@ -17,11 +17,13 @@ namespace YubicoDotNetClient
         private String sync;
         private String otp;
         private String nonce;
+        private SortedDictionary<String, String> responseMap;
 
         public YubicoResponseImpl(String response)
         {
             StringReader reader = new StringReader(response);
             String line;
+            responseMap = new SortedDictionary<String, String>();
             while ((line = reader.ReadLine()) != null)
             {
                 String[] parts = line.Split(new char[] { '=' }, 2);
@@ -48,10 +50,14 @@ namespace YubicoDotNetClient
                     case "sl":
                         sync = parts[1];
                         break;
+                    case "otp":
+                        otp = parts[1];
+                        break;
                     case "nonce":
                         nonce = parts[1];
                         break;
                 }
+                responseMap.Add(parts[0], parts[1]);
             }
         }
 
@@ -98,6 +104,11 @@ namespace YubicoDotNetClient
         public String getNonce()
         {
             return nonce;
+        }
+
+        public SortedDictionary<String, String> getResponseMap()
+        {
+            return responseMap;
         }
     }
 }

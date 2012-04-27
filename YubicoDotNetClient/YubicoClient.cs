@@ -55,6 +55,12 @@ namespace YubicoDotNetClient
             this.clientId = clientId;
         }
 
+        public YubicoClient(String clientId, String apiKey)
+        {
+            this.clientId = clientId;
+            setApiKey(apiKey);
+        }
+
         public void setApiKey(String apiKey)
         {
             this.apiKey = Convert.FromBase64String(apiKey);

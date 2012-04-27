@@ -133,7 +133,7 @@ namespace YubicoDotNetClient
         private static String generateNonce()
         {
             RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-            byte[] nonce = new byte[64];
+            byte[] nonce = new byte[16];
             random.GetBytes(nonce);
             return BitConverter.ToString(nonce).Replace("-", "");
         }

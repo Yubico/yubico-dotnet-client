@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
@@ -12,23 +13,31 @@ namespace YubicoDotNetClient
     {
         public static YubicoResponse validate(String[] urls)
         {
-            Task<YubicoResponse>[] tasks = new Task<YubicoResponse>[urls.Length];
-            for (int i = 0; i < urls.Length; i++)
+            List<Task<YubicoResponse>> tasks = new List<Task<YubicoResponse>>();
+            CancellationTokenSource cancellation = new CancellationTokenSource();
+            foreach (String url in urls)
             {
-                tasks[i] = Task<YubicoResponse>.Factory.StartNew(() =>
+                
+                Task<YubicoResponse> task = new Task<YubicoResponse>(() =>
+                    {
+                        return DoVerify(url);
+                    }, cancellation.Token);
+                task.ContinueWith((t) => { }, TaskContinuationOptions.OnlyOnFaulted);
+                tasks.Add(task);
+                task.Start();
+            }
+            while (tasks.Count != 0)
+            {
+                int completed = Task.WaitAny(tasks.ToArray());
+                Task<YubicoResponse> task = tasks[completed];
+                tasks.Remove(task);
+                if (task.Result != null)
                 {
-                    return DoVerify(urls[i]);
-                });
-
+                    cancellation.Cancel();
+                    return task.Result;
+                }
             }
-            int completed = Task.WaitAny(tasks);
-
-            foreach (Task task in tasks)
-            {
-                task.ContinueWith(t => t.Exception, TaskContinuationOptions.OnlyOnFaulted);
-            }
-
-            return tasks[completed].Result;
+            return null;
         }
 
         private static YubicoResponse DoVerify(String url)
@@ -41,7 +50,8 @@ namespace YubicoDotNetClient
             YubicoResponse response = new YubicoResponseImpl(reader.ReadToEnd());
             if (response.getStatus() == YubicoResponseStatus.REPLAYED_REQUEST)
             {
-                throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
+                //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
+                return null;
             }
             return response;
         }

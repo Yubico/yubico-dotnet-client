@@ -57,7 +57,10 @@ namespace YubicoDotNetClient
                         nonce = parts[1];
                         break;
                 }
-                responseMap.Add(parts[0], parts[1]);
+                if (parts[0] != "")
+                {
+                    responseMap.Add(parts[0], parts[1]);
+                }
             }
         }
 

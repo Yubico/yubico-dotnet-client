@@ -37,16 +37,70 @@ namespace YubicoDotNetClient
 {
     public interface YubicoResponse
     {
+        /// <summary>
+        /// Get the servers signature of the response.
+        /// </summary>
+        /// <returns>Base64 of hmac-sha1 of the response concatenated as url</returns>
         String getH();
+
+        /// <summary>
+        /// Get the servers response of the timestamp.
+        /// </summary>
+        /// <returns>timestamp in UTC</returns>
         String getT();
+
+        /// <summary>
+        /// The response status
+        /// </summary>
+        /// <returns>status of the response</returns>
         YubicoResponseStatus getStatus();
+
+        /// <summary>
+        /// The YubiKey internal timestamp when OTP was generated
+        /// </summary>
+        /// <returns>YubiKey internal 8hz timestamp</returns>
         int getTimestamp();
+
+        /// <summary>
+        /// The YubiKey internal sessionCounter
+        /// </summary>
+        /// <returns>the YubiKey session counter, counting up for each key press</returns>
         int getSessionCounter();
+
+        /// <summary>
+        /// The YubiKey internal useCounter
+        /// </summary>
+        /// <returns>the YubiKey use counter, counts up for each powerup</returns>
         int getUseCounter();
+
+        /// <summary>
+        /// The Syncronization achieved
+        /// </summary>
+        /// <returns>syncronization achieved in percent</returns>
         String getSync();
+
+        /// <summary>
+        /// The OTP asked about
+        /// </summary>
+        /// <returns>the OTP that the server is returning a result for</returns>
         String getOtp();
+
+        /// <summary>
+        /// The nonce that was sent in the request
+        /// </summary>
+        /// <returns>the nonce that was sent to the server in the request</returns>
         String getNonce();
+
+        /// <summary>
+        /// A map of all results returned
+        /// </summary>
+        /// <returns>map of the results returned from the server</returns>
         SortedDictionary<String, String> getResponseMap();
+
+        /// <summary>
+        /// The publicId of the OTP this response is about
+        /// </summary>
+        /// <returns>the publicId for the OTP</returns>
         String getPublicId();
     }
 }

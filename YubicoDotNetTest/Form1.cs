@@ -24,6 +24,7 @@ namespace YubicoDotNetTest
             String clientId = clientInput.Text;
             String apiKey = keyInput.Text;
             String sync = syncInput.Text;
+            String nonce = nonceInput.Text;
             output.Text = "";
 
             YubicoClient client = new YubicoClient(clientId);
@@ -34,6 +35,10 @@ namespace YubicoDotNetTest
             if (!sync.Equals(""))
             {
                 client.setSync(sync);
+            }
+            if (!nonce.Equals(""))
+            {
+                client.setNonce(nonce);
             }
             YubicoResponse response = client.verify(otp);
             if (response != null)

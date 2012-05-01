@@ -38,6 +38,8 @@
             this.output = new System.Windows.Forms.Label();
             this.syncInput = new System.Windows.Forms.TextBox();
             this.syncLabel = new System.Windows.Forms.Label();
+            this.nonceInput = new System.Windows.Forms.TextBox();
+            this.nonce = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // otpInput
@@ -49,7 +51,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 134);
+            this.button1.Location = new System.Drawing.Point(13, 161);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -101,7 +103,7 @@
             // output
             // 
             this.output.AutoSize = true;
-            this.output.Location = new System.Drawing.Point(12, 189);
+            this.output.Location = new System.Drawing.Point(10, 212);
             this.output.Name = "output";
             this.output.Size = new System.Drawing.Size(0, 13);
             this.output.TabIndex = 7;
@@ -122,11 +124,29 @@
             this.syncLabel.TabIndex = 9;
             this.syncLabel.Text = "sync";
             // 
+            // nonceInput
+            // 
+            this.nonceInput.Location = new System.Drawing.Point(13, 135);
+            this.nonceInput.Name = "nonceInput";
+            this.nonceInput.Size = new System.Drawing.Size(100, 20);
+            this.nonceInput.TabIndex = 10;
+            // 
+            // nonce
+            // 
+            this.nonce.AutoSize = true;
+            this.nonce.Location = new System.Drawing.Point(120, 135);
+            this.nonce.Name = "nonce";
+            this.nonce.Size = new System.Drawing.Size(37, 13);
+            this.nonce.TabIndex = 11;
+            this.nonce.Text = "nonce";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.nonce);
+            this.Controls.Add(this.nonceInput);
             this.Controls.Add(this.syncLabel);
             this.Controls.Add(this.syncInput);
             this.Controls.Add(this.output);
@@ -156,6 +176,8 @@
         private System.Windows.Forms.Label output;
         private System.Windows.Forms.TextBox syncInput;
         private System.Windows.Forms.Label syncLabel;
+        private System.Windows.Forms.TextBox nonceInput;
+        private System.Windows.Forms.Label nonce;
     }
 }
 

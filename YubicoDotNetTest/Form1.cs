@@ -70,12 +70,23 @@ namespace YubicoDotNetTest
             {
                 client.setNonce(nonce);
             }
-            YubicoResponse response = client.verify(otp);
-            if (response != null)
+            try
             {
-                output.Text = response.getStatus().ToString() + "\r\n" +
-                    response.getPublicId() + "\r\n" +
-                    response.getUseCounter() + " " + response.getSessionCounter();
+                YubicoResponse response = client.verify(otp);
+                if (response != null)
+                {
+                    output.Text = response.getStatus().ToString() + "\r\n" +
+                        response.getPublicId() + "\r\n" +
+                        response.getUseCounter() + " " + response.getSessionCounter();
+                }
+                else
+                {
+                    output.Text = "Null result returned, error in call";
+                }
+            }
+            catch (YubicoValidationFailure yvf)
+            {
+                output.Text = "Failure in validation: " + yvf.Message;
             }
         }
     }

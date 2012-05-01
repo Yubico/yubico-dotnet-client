@@ -36,7 +36,7 @@ using System.Runtime.Serialization;
 
 namespace YubicoDotNetClient
 {
-    class YubicoValidationFailure : ApplicationException
+    public class YubicoValidationFailure : ApplicationException
     {
         public YubicoValidationFailure()
         {

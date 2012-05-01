@@ -53,6 +53,7 @@ namespace YubicoDotNetClient
         private String clientId;
         private byte[] apiKey = null;
         private String sync;
+        private String nonce;
 
         private String[] apiUrls = {
                                        "https://api.yubico.com/wsapi/2.0/verify",
@@ -109,6 +110,15 @@ namespace YubicoDotNetClient
         }
 
         /// <summary>
+        /// Set the nonce to be used for the next requests. If this is unset a random nonce will be used.
+        /// </summary>
+        /// <param name="nonce">nonce to be used for the next request</param>
+        public void setNonce(String nonce)
+        {
+            this.nonce = nonce;
+        }
+
+        /// <summary>
         /// Do verification of OTP
         /// </summary>
         /// <param name="otp">The OTP from a YubiKey in modhex</param>
@@ -121,7 +131,11 @@ namespace YubicoDotNetClient
                 throw new FormatException("otp format is invalid");
             }
 
-            String nonce = generateNonce();
+            if (nonce == null)
+            {
+                nonce = generateNonce();
+            }
+
             SortedDictionary<String, String> queryMap = new SortedDictionary<String, String>();
             queryMap.Add("id", clientId);
             queryMap.Add("nonce", nonce);
@@ -199,6 +213,9 @@ namespace YubicoDotNetClient
                     throw new YubicoValidationFailure("OTP in request and response does not match, man in the middle?");
                 }
             }
+
+            // set nonce to null so we will generate a new one for the next request
+            nonce = null;
             return response;
         }
 

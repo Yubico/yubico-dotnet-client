@@ -196,7 +196,7 @@ namespace YubicoDotNetClient
                     }
                 }
                 String clientSignature = doSignature(responseString, apiKey);
-                if (serverSignature != null && !clientSignature.Equals(serverSignature))
+                if (serverSignature == null || !clientSignature.Equals(serverSignature))
                 {
                     throw new YubicoValidationFailure("Server signature did not match our key.");
                 }

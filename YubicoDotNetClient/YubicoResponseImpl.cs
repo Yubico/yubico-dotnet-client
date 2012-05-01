@@ -38,8 +38,8 @@ namespace YubicoDotNetClient
 {
     class YubicoResponseImpl : YubicoResponse
     {
-        private String H;
-        private String T;
+        private String h;
+        private String t;
         private YubicoResponseStatus status;
         private int timestamp;
         private int sessionCounter;
@@ -60,11 +60,11 @@ namespace YubicoDotNetClient
                 String[] parts = line.Split(new char[] { '=' }, 2);
                 switch (parts[0])
                 {
-                    case "H":
-                        H = parts[1];
+                    case "h":
+                        h = parts[1];
                         break;
-                    case "T":
-                        T = parts[1];
+                    case "t":
+                        t = parts[1];
                         break;
                     case "status":
                         status = (YubicoResponseStatus)Enum.Parse(typeof(YubicoResponseStatus), parts[1], true);
@@ -104,12 +104,12 @@ namespace YubicoDotNetClient
 
         public String getH()
         {
-            return H;
+            return h;
         }
 
         public String getT()
         {
-            return T;
+            return t;
         }
 
         public YubicoResponseStatus getStatus()

@@ -58,6 +58,7 @@ namespace YubicoDotNetClient
             }
             while (tasks.Count != 0)
             {
+                // TODO: handle exceptions from the verify task. Better to be able to propagate cause for error.
                 int completed = Task.WaitAny(tasks.ToArray());
                 Task<YubicoResponse> task = tasks[completed];
                 tasks.Remove(task);

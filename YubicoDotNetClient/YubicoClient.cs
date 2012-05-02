@@ -157,12 +157,12 @@ namespace YubicoDotNetClient
                 {
                     query += "&";
                 }
-                query += pair.Key + "=" + pair.Value;
+                query += pair.Key + "=" +  Uri.EscapeDataString(pair.Value);
             }
 
             if (apiKey != null)
             {
-                query += "&h=" + doSignature(query, apiKey).Replace("+", "%2B");
+                query += "&h=" + Uri.EscapeDataString(doSignature(query, apiKey));
             }
 
             List<String> urls = new List<String>();

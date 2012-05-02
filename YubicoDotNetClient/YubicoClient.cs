@@ -86,6 +86,7 @@ namespace YubicoDotNetClient
         /// Set the api key
         /// </summary>
         /// <param name="apiKey">ApiKey from http://upgrade.yubico.com/getapikey/ </param>
+        /// <exception cref="FormatException"/>
         public void setApiKey(String apiKey)
         {
             this.apiKey = Convert.FromBase64String(apiKey);

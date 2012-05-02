@@ -36,6 +36,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using YubicoDotNetClient;
 
@@ -72,10 +73,13 @@ namespace YubicoDotNetTest
             }
             try
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 YubicoResponse response = client.verify(otp);
+                sw.Stop();
                 if (response != null)
                 {
-                    output.Text = response.getStatus().ToString() + "\r\n" +
+                    output.Text = "response in: " + sw.ElapsedMilliseconds + "\r\n" +
+                        response.getStatus().ToString() + "\r\n" +
                         response.getPublicId() + "\r\n" +
                         response.getUseCounter() + " " + response.getSessionCounter();
                 }

@@ -125,6 +125,7 @@ namespace YubicoDotNetClient
         /// <param name="otp">The OTP from a YubiKey in modhex</param>
         /// <returns>YubicoResponse indicating status of the request</returns>
         /// <exception cref="YubicoValidationFailure"/>
+        /// <exception cref="FormatException"/>
         public YubicoResponse verify(String otp)
         {
             if (!isOtpValidFormat(otp))

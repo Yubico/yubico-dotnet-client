@@ -41,7 +41,7 @@ namespace YubicoDotNetClient
 {
     class YubicoValidate
     {
-        public static YubicoResponse validate(String[] urls)
+        public static YubicoResponse validate(String[] urls, String userAgent)
         {
             List<Task<YubicoResponse>> tasks = new List<Task<YubicoResponse>>();
             CancellationTokenSource cancellation = new CancellationTokenSource();
@@ -50,7 +50,7 @@ namespace YubicoDotNetClient
                 
                 Task<YubicoResponse> task = new Task<YubicoResponse>(() =>
                     {
-                        return DoVerify(url);
+                        return DoVerify(url, userAgent);
                     }, cancellation.Token);
                 task.ContinueWith((t) => { }, TaskContinuationOptions.OnlyOnFaulted);
                 tasks.Add(task);
@@ -71,10 +71,17 @@ namespace YubicoDotNetClient
             return null;
         }
 
-        private static YubicoResponse DoVerify(String url)
+        private static YubicoResponse DoVerify(String url, String userAgent)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            if (userAgent == null)
+            {
+                request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            }
+            else
+            {
+                request.UserAgent = userAgent;
+            }
             request.Timeout = 15000;
             HttpWebResponse rawResponse;
             try

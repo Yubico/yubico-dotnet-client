@@ -54,6 +54,7 @@ namespace YubicoDotNetClient
         private byte[] apiKey = null;
         private String sync;
         private String nonce;
+        private String userAgent;
 
         private String[] apiUrls = {
                                        "https://api.yubico.com/wsapi/2.0/verify",
@@ -120,6 +121,15 @@ namespace YubicoDotNetClient
         }
 
         /// <summary>
+        /// Set the user agent used in requests. If this isn't set one will be generated.
+        /// </summary>
+        /// <param name="userAgent">the user agent to be used in verification requests</param>
+        public void setUserAgent(String userAgent)
+        {
+            this.userAgent = userAgent;
+        }
+
+        /// <summary>
         /// Do verification of OTP
         /// </summary>
         /// <param name="otp">The OTP from a YubiKey in modhex</param>
@@ -171,7 +181,7 @@ namespace YubicoDotNetClient
             {
                 urls.Add(url + "?" + query);
             }
-            YubicoResponse response = YubicoValidate.validate(urls.ToArray());
+            YubicoResponse response = YubicoValidate.validate(urls.ToArray(), userAgent);
 
             if (apiKey != null && response.getStatus() != YubicoResponseStatus.BAD_SIGNATURE)
             {

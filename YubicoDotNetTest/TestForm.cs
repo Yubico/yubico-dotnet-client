@@ -29,12 +29,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -42,55 +36,56 @@ using YubicoDotNetClient;
 
 namespace YubicoDotNetTest
 {
-    public partial class Form1 : Form
+    public partial class TestForm : Form
     {
-        public Form1()
+        public TestForm()
         {
             InitializeComponent();
         }
 
-        private void submit(object sender, EventArgs e)
+        private void Submit(object sender, EventArgs e)
         {
-            String otp = otpInput.Text;
-            String clientId = clientInput.Text;
-            String apiKey = keyInput.Text;
-            String sync = syncInput.Text;
-            String nonce = nonceInput.Text;
-            output.Text = "";
+            var otp = OtpInput.Text;
+            var clientId = ClientIdInput.Text;
+            var apiKey = ApiKeyInput.Text;
+            var sync = SyncInput.Text;
+            var nonce = NonceInput.Text;
 
-            YubicoClient client = new YubicoClient(clientId);
-            if (!apiKey.Equals(""))
+            OutputField.Clear();
+
+            var client = new YubicoClient(clientId);
+            if (!string.IsNullOrEmpty(apiKey))
             {
-                client.setApiKey(apiKey);
+                client.SetApiKey(apiKey);
             }
-            if (!sync.Equals(""))
+            if (!string.IsNullOrEmpty(sync))
             {
-                client.setSync(sync);
+                client.SetSync(sync);
             }
-            if (!nonce.Equals(""))
+            if (!string.IsNullOrEmpty(nonce))
             {
-                client.setNonce(nonce);
+                client.SetNonce(nonce);
             }
             try
             {
-                Stopwatch sw = Stopwatch.StartNew();
-                YubicoResponse response = client.verify(otp);
+                var sw = Stopwatch.StartNew();
+                var response = client.Verify(otp);
                 sw.Stop();
                 if (response != null)
                 {
-                    output.Text = "response in: " + sw.ElapsedMilliseconds + "\r\n" +
-                        response.getStatus().ToString() + "\r\n" +
-                        response.getPublicId() + "\r\n" +
-                        response.getUseCounter() + " " + response.getSessionCounter();
+                    OutputField.AppendText(string.Format("response in: {0}{1}", sw.ElapsedMilliseconds, Environment.NewLine));
+                    OutputField.AppendText(string.Format("Status: {0}{1}", response.Status, Environment.NewLine));
+                    OutputField.AppendText(string.Format("Public ID: {0}{1}", response.PublicId, Environment.NewLine));
+                    OutputField.AppendText(string.Format("Use/Session Counter: {0} {1}{2}", response.UseCounter, response.SessionCounter, Environment.NewLine));
                 }
                 else
                 {
-                    output.Text = "Null result returned, error in call";
+                    OutputField.Text = "Null result returned, error in call";
                 }
             }
             catch (YubicoValidationFailure yvf)
             {
-                output.Text = "Failure in validation: " + yvf.Message;
+                OutputField.Text = string.Format("Failure in validation: {0}{1}", yvf.Message, Environment.NewLine);
             }
         }
     }

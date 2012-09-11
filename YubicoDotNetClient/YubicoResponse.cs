@@ -102,6 +102,11 @@ namespace YubicoDotNetClient
             {
                 throw new ArgumentException("Response doesn't look like a validation response.");
             }
-        }
+
+            if (Otp != null && Otp.Length > 32 && YubicoClient.IsOtpValidFormat(Otp))
+            {
+                PublicId = Otp.Substring(0, Otp.Length - 32);
+            }
+        }        
     }
 }

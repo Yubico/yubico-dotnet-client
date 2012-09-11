@@ -236,17 +236,21 @@ namespace YubicoDotNetClient
 
         private static string DoSignature(string message, byte[] key)
         {
-            HMACSHA1 hmac = new HMACSHA1(key);
-            byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
-            return Convert.ToBase64String(signature);
+            using (HMACSHA1 hmac = new HMACSHA1(key))
+            {
+                byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
+                return Convert.ToBase64String(signature);
+            }
         }
 
         private static string GenerateNonce()
         {
-            RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-            byte[] nonce = new byte[16];
-            random.GetBytes(nonce);
-            return BitConverter.ToString(nonce).Replace("-", "");
+            using (RNGCryptoServiceProvider random = new RNGCryptoServiceProvider())
+            {
+                byte[] nonce = new byte[16];
+                random.GetBytes(nonce);
+                return BitConverter.ToString(nonce).Replace("-", "");
+            }
         }
 
         /// <summary>

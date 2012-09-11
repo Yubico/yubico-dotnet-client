@@ -42,11 +42,11 @@ namespace YubicoDotNetClient
         {
         }
 
-        public YubicoValidationFailure(String message) : base(message)
+        public YubicoValidationFailure(string message) : base(message)
         {
         }
 
-        public YubicoValidationFailure(String message, Exception inner) : base(message, inner)
+        public YubicoValidationFailure(string message, Exception inner) : base(message, inner)
         {
         }
 

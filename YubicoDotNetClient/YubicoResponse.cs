@@ -50,16 +50,16 @@ namespace YubicoDotNetClient
         public IEnumerable<KeyValuePair<string, string>> ResponseMap { get; private set; }
         public string PublicId { get; private set; }
 
-        public YubicoResponse(String response)
+        public YubicoResponse(string response)
         {
             StringReader reader = new StringReader(response);
-            String line;
-            var responseMap = new SortedDictionary<String, String>();
+            string line;
+            var responseMap = new SortedDictionary<string, string>();
             ResponseMap = responseMap;
             while ((line = reader.ReadLine()) != null)
             {
                 bool unhandled = false;
-                String[] parts = line.Split(new char[] { '=' }, 2);
+                string[] parts = line.Split(new char[] { '=' }, 2);
                 switch (parts[0])
                 {
                     case "h":

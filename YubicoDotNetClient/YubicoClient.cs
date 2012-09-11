@@ -41,11 +41,14 @@ namespace YubicoDotNetClient
     /// </summary>
     /// <example>
     /// YubicoClient client = new YubicoClient(clientId, apiKey);
-    /// IYubicoResponse response = client.verify(otp);
-    /// if(response.getStatus() == YubicoResponseStatus.OK) {
-    ///   // validation succeeded
-    /// } else {
-    ///  // validation failure
+    /// YubicoResponse response = client.Verify(otp);
+    /// if(response.Status == YubicoResponseStatus.Ok) 
+    /// {
+    ///     // validation succeeded
+    /// } 
+    /// else 
+    /// {
+    ///     // validation failure
     /// }
     /// </example>
     public class YubicoClient

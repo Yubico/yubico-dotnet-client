@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -58,13 +59,15 @@ namespace YubicoDotNetClient
         private string _nonce;
         private string _userAgent;
 
-        private string[] _apiUrls = {
-                                       "https://api.yubico.com/wsapi/2.0/verify",
-                                       "https://api2.yubico.com/wsapi/2.0/verify",
-                                       "https://api3.yubico.com/wsapi/2.0/verify",
-                                       "https://api4.yubico.com/wsapi/2.0/verify",
-                                       "https://api5.yubico.com/wsapi/2.0/verify"
-                                   };
+        private string[] _apiUrls = 
+        {
+            "https://api.yubico.com/wsapi/2.0/verify",
+            "https://api2.yubico.com/wsapi/2.0/verify",
+            "https://api3.yubico.com/wsapi/2.0/verify",
+            "https://api4.yubico.com/wsapi/2.0/verify",
+            "https://api5.yubico.com/wsapi/2.0/verify"
+        };
+        
         /// <summary>
         /// Constructor for YubicoClient with clientId.
         /// </summary>
@@ -152,9 +155,9 @@ namespace YubicoDotNetClient
 
             var queryMap = new SortedDictionary<string, string>
             {
-                {"id", _clientId}, 
-                {"nonce", _nonce}, 
-                {"otp", otp}, 
+                {"id",        _clientId}, 
+                {"nonce",     _nonce}, 
+                {"otp",       otp}, 
                 {"timestamp", "1"}
             };
 
@@ -163,36 +166,32 @@ namespace YubicoDotNetClient
                 queryMap.Add("sl", _sync);
             }
 
-            string query = null;
+            StringBuilder queryBuilder = null;
             foreach (var pair in queryMap)
             {
-                if (query == null)
+                if (queryBuilder == null)
                 {
-                    query = "";
+                    queryBuilder = new StringBuilder();
                 }
                 else
                 {
-                    query += "&";
+                    queryBuilder.Append("&");
                 }
-                query += pair.Key + "=" +  Uri.EscapeDataString(pair.Value);
+                queryBuilder.AppendFormat("{0}={1}", pair.Key, Uri.EscapeDataString(pair.Value));
             }
 
-            if (_apiKey != null)
+            if (_apiKey != null && queryBuilder != null)
             {
-                query += "&h=" + Uri.EscapeDataString(DoSignature(query, _apiKey));
+                var querySoFar = queryBuilder.ToString();
+                queryBuilder.AppendFormat("&h={0}", Uri.EscapeDataString(DoSignature(querySoFar, _apiKey)));
             }
 
-            var urls = new List<string>();
-            foreach (string url in _apiUrls)
-            {
-                urls.Add(url + "?" + query);
-            }
-            
-            var response = YubicoValidate.Validate(urls, _userAgent);
+            var urls = _apiUrls.Select(url => string.Format("{0}?{1}", url, queryBuilder)).ToList();
+            var response = YubicoValidate.Validate(urls, _userAgent);            
 
             if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {
-                string responseString = null;
+                StringBuilder responseStringBuilder = null;
                 string serverSignature = null;
                 foreach (var pair in response.ResponseMap)
                 {
@@ -202,23 +201,25 @@ namespace YubicoDotNetClient
                     }
                     else
                     {
-
-                        if (responseString == null)
+                        if (responseStringBuilder == null)
                         {
-                            responseString = "";
+                            responseStringBuilder = new StringBuilder();
                         }
                         else
                         {
-                            responseString += "&";
+                            responseStringBuilder.Append("&");
                         }
-                        responseString += pair.Key + "=" + pair.Value;
+                        responseStringBuilder.AppendFormat("{0}={1}", pair.Key, pair.Value);
                     }
                 }
-
-                var clientSignature = DoSignature(responseString, _apiKey);
-                if (serverSignature == null || !clientSignature.Equals(serverSignature))
-                {
-                    throw new YubicoValidationFailure("Server signature did not match our key.");
+                
+                if (responseStringBuilder != null)
+                {                    
+                    var clientSignature = DoSignature(responseStringBuilder.ToString(), _apiKey);
+                    if (serverSignature == null || !clientSignature.Equals(serverSignature))
+                    {
+                        throw new YubicoValidationFailure("Server signature did not match our key.");
+                    }
                 }
             }
 
@@ -228,7 +229,8 @@ namespace YubicoDotNetClient
                 {
                     throw new YubicoValidationFailure("Nonce in request and response does not match, man in the middle?");
                 }
-                else if (!response.Otp.Equals(otp))
+
+                if (!response.Otp.Equals(otp))
                 {
                     throw new YubicoValidationFailure("OTP in request and response does not match, man in the middle?");
                 }
@@ -243,7 +245,7 @@ namespace YubicoDotNetClient
         {
             using (var hmac = new HMACSHA1(key))
             {
-                byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
+                var signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
                 return Convert.ToBase64String(signature);
             }
         }
@@ -269,14 +271,7 @@ namespace YubicoDotNetClient
             {
                 return false;
             }
-            foreach (char c in otp)
-            {
-                if (c < 0x20 || c > 0x7e)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return otp.ToCharArray().All(c => c >= 0x20 && c <= 0x7e);
         }
     }
 }

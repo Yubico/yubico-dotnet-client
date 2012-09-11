@@ -28,10 +28,7 @@
  *  SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YubicoDotNetClient
 {
@@ -102,6 +99,5 @@ namespace YubicoDotNetClient
         /// </summary>
         /// <returns>the publicId for the OTP</returns>
         string PublicId { get; }
-
     }
 }

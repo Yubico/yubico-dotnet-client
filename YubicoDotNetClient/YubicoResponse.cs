@@ -30,8 +30,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace YubicoDotNetClient
@@ -59,7 +57,7 @@ namespace YubicoDotNetClient
             while ((line = reader.ReadLine()) != null)
             {
                 bool unhandled = false;
-                string[] parts = line.Split(new char[] { '=' }, 2);
+                string[] parts = line.Split(new[] { '=' }, 2);
                 switch (parts[0])
                 {
                     case "h":

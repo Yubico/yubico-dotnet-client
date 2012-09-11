@@ -264,7 +264,7 @@ namespace YubicoDotNetClient
             {
                 return false;
             }
-            foreach (char c in otp.ToCharArray())
+            foreach (char c in otp)
             {
                 if (c < 0x20 || c > 0x7e)
                 {

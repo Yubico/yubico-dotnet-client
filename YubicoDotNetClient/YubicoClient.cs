@@ -30,7 +30,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -151,17 +150,21 @@ namespace YubicoDotNetClient
                 _nonce = GenerateNonce();
             }
 
-            SortedDictionary<string, string> queryMap = new SortedDictionary<string, string>();
-            queryMap.Add("id", _clientId);
-            queryMap.Add("nonce", _nonce);
-            queryMap.Add("otp", otp);
-            queryMap.Add("timestamp", "1");
+            var queryMap = new SortedDictionary<string, string>
+            {
+                {"id", _clientId}, 
+                {"nonce", _nonce}, 
+                {"otp", otp}, 
+                {"timestamp", "1"}
+            };
+
             if (_sync != null)
             {
                 queryMap.Add("sl", _sync);
             }
+
             string query = null;
-            foreach (KeyValuePair<string, string> pair in queryMap)
+            foreach (var pair in queryMap)
             {
                 if (query == null)
                 {
@@ -179,18 +182,19 @@ namespace YubicoDotNetClient
                 query += "&h=" + Uri.EscapeDataString(DoSignature(query, _apiKey));
             }
 
-            List<string> urls = new List<string>();
+            var urls = new List<string>();
             foreach (string url in _apiUrls)
             {
                 urls.Add(url + "?" + query);
             }
-            IYubicoResponse response = YubicoValidate.Validate(urls, _userAgent);
+            
+            var response = YubicoValidate.Validate(urls, _userAgent);
 
             if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {
                 string responseString = null;
                 string serverSignature = null;
-                foreach (KeyValuePair<string, string> pair in response.ResponseMap)
+                foreach (var pair in response.ResponseMap)
                 {
                     if (pair.Key.Equals("h"))
                     {
@@ -210,7 +214,8 @@ namespace YubicoDotNetClient
                         responseString += pair.Key + "=" + pair.Value;
                     }
                 }
-                string clientSignature = DoSignature(responseString, _apiKey);
+
+                var clientSignature = DoSignature(responseString, _apiKey);
                 if (serverSignature == null || !clientSignature.Equals(serverSignature))
                 {
                     throw new YubicoValidationFailure("Server signature did not match our key.");
@@ -236,7 +241,7 @@ namespace YubicoDotNetClient
 
         private static string DoSignature(string message, byte[] key)
         {
-            using (HMACSHA1 hmac = new HMACSHA1(key))
+            using (var hmac = new HMACSHA1(key))
             {
                 byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
                 return Convert.ToBase64String(signature);
@@ -245,9 +250,9 @@ namespace YubicoDotNetClient
 
         private static string GenerateNonce()
         {
-            using (RNGCryptoServiceProvider random = new RNGCryptoServiceProvider())
+            using (var random = new RNGCryptoServiceProvider())
             {
-                byte[] nonce = new byte[16];
+                var nonce = new byte[16];
                 random.GetBytes(nonce);
                 return BitConverter.ToString(nonce).Replace("-", "");
             }

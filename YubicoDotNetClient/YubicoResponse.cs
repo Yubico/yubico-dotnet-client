@@ -50,14 +50,17 @@ namespace YubicoDotNetClient
 
         public YubicoResponse(string response)
         {
-            StringReader reader = new StringReader(response);
+            var reader = new StringReader(response);
             string line;
+
             var responseMap = new SortedDictionary<string, string>();
             ResponseMap = responseMap;
+
             while ((line = reader.ReadLine()) != null)
             {
-                bool unhandled = false;
-                string[] parts = line.Split(new[] { '=' }, 2);
+                var unhandled = false;
+                var parts = line.Split(new[] { '=' }, 2);
+
                 switch (parts[0])
                 {
                     case "h":

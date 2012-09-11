@@ -41,15 +41,11 @@ namespace YubicoDotNetClient
     {
         public static IYubicoResponse Validate(List<String> urls, String userAgent)
         {
-            List<Task<IYubicoResponse>> tasks = new List<Task<IYubicoResponse>>();
-            CancellationTokenSource cancellation = new CancellationTokenSource();
+            var tasks = new List<Task<IYubicoResponse>>();
+            var cancellation = new CancellationTokenSource();
             foreach (String url in urls)
-            {
-                
-                Task<IYubicoResponse> task = new Task<IYubicoResponse>(() =>
-                    {
-                        return DoVerify(url, userAgent);
-                    }, cancellation.Token);
+            {                
+                var task = new Task<IYubicoResponse>(() => DoVerify(url, userAgent), cancellation.Token);
                 task.ContinueWith((t) => { }, TaskContinuationOptions.OnlyOnFaulted);
                 tasks.Add(task);
                 task.Start();
@@ -71,7 +67,7 @@ namespace YubicoDotNetClient
 
         private static IYubicoResponse DoVerify(String url, String userAgent)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             if (userAgent == null)
             {
                 request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -80,18 +76,21 @@ namespace YubicoDotNetClient
             {
                 request.UserAgent = userAgent;
             }
+
             request.Timeout = 15000;
+
             HttpWebResponse rawResponse;
             try
             {
-                rawResponse = (HttpWebResponse)request.GetResponse();
+                rawResponse = (HttpWebResponse)request.GetResponse();                
             }
             catch (WebException)
             {
                 return null;
             }
-            Stream dataStream = rawResponse.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
+            
+            var dataStream = rawResponse.GetResponseStream();
+            var reader = new StreamReader(dataStream);
             IYubicoResponse response;
             try
             {

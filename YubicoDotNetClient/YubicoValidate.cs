@@ -41,7 +41,7 @@ namespace YubicoDotNetClient
 {
     class YubicoValidate
     {
-        public static IYubicoResponse validate(List<String> urls, String userAgent)
+        public static IYubicoResponse Validate(List<String> urls, String userAgent)
         {
             List<Task<IYubicoResponse>> tasks = new List<Task<IYubicoResponse>>();
             CancellationTokenSource cancellation = new CancellationTokenSource();

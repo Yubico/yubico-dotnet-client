@@ -41,14 +41,14 @@ namespace YubicoDotNetClient
 {
     class YubicoValidate
     {
-        public static YubicoResponse validate(List<String> urls, String userAgent)
+        public static IYubicoResponse validate(List<String> urls, String userAgent)
         {
-            List<Task<YubicoResponse>> tasks = new List<Task<YubicoResponse>>();
+            List<Task<IYubicoResponse>> tasks = new List<Task<IYubicoResponse>>();
             CancellationTokenSource cancellation = new CancellationTokenSource();
             foreach (String url in urls)
             {
                 
-                Task<YubicoResponse> task = new Task<YubicoResponse>(() =>
+                Task<IYubicoResponse> task = new Task<IYubicoResponse>(() =>
                     {
                         return DoVerify(url, userAgent);
                     }, cancellation.Token);
@@ -60,7 +60,7 @@ namespace YubicoDotNetClient
             {
                 // TODO: handle exceptions from the verify task. Better to be able to propagate cause for error.
                 int completed = Task.WaitAny(tasks.ToArray());
-                Task<YubicoResponse> task = tasks[completed];
+                Task<IYubicoResponse> task = tasks[completed];
                 tasks.Remove(task);
                 if (task.Result != null)
                 {
@@ -71,7 +71,7 @@ namespace YubicoDotNetClient
             return null;
         }
 
-        private static YubicoResponse DoVerify(String url, String userAgent)
+        private static IYubicoResponse DoVerify(String url, String userAgent)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             if (userAgent == null)
@@ -94,10 +94,10 @@ namespace YubicoDotNetClient
             }
             Stream dataStream = rawResponse.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
-            YubicoResponse response;
+            IYubicoResponse response;
             try
             {
-                response = new YubicoResponseImpl(reader.ReadToEnd());
+                response = new YubicoResponse(reader.ReadToEnd());
             }
             catch (ArgumentException)
             {

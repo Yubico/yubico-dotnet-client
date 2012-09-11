@@ -74,7 +74,7 @@ namespace YubicoDotNetTest
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                YubicoResponse response = client.verify(otp);
+                IYubicoResponse response = client.verify(otp);
                 sw.Stop();
                 if (response != null)
                 {

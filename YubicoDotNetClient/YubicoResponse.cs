@@ -52,10 +52,10 @@ namespace YubicoDotNetClient
         {
             var reader = new StringReader(response);
             string line;
-
+            
             var responseMap = new SortedDictionary<string, string>();
             ResponseMap = responseMap;
-
+            
             while ((line = reader.ReadLine()) != null)
             {
                 var unhandled = false;

@@ -54,6 +54,7 @@ namespace YubicoDotNetClient
                 tasks.Add(task);
                 task.Start();
             }
+
             while (tasks.Count != 0)
             {
                 // TODO: handle exceptions from the verify task. Better to be able to propagate cause for error.

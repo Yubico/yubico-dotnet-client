@@ -40,11 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="YubicoResponseImpl.cs" />
+    <Compile Include="YubicoResponse.cs" />
     <Compile Include="YubicoResponseStatus.cs" />
     <Compile Include="YubicoClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="YubicoResponse.cs" />
+    <Compile Include="IYubicoResponse.cs" />
     <Compile Include="YubicoValidate.cs" />
     <Compile Include="YubicoValidationException.cs" />
     <Compile Include="YubicoValidationFailure.cs" />

@@ -8,9 +8,12 @@ Usage
 -----
 
 YubicoClient client = new YubicoClient(clientId, apiKey);
-YubicoResponse response = client.verify(otp);
-if(response.getStatus() == YubicoResponseStatus.OK) {
+YubicoResponse response = client.Verify(otp);
+if(response.Status == YubicoResponseStatus.Ok) 
+{
   // validation success
-} else {
+} 
+else 
+{
   // validation failure
 }

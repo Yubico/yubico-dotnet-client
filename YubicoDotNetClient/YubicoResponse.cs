@@ -30,77 +30,132 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 namespace YubicoDotNetClient
 {
-    public interface YubicoResponse
+    public sealed class YubicoResponse : IYubicoResponse
     {
-        /// <summary>
-        /// Get the servers signature of the response.
-        /// </summary>
-        /// <returns>Base64 of hmac-sha1 of the response concatenated as url</returns>
-        String getH();
+        public string H { get; private set; }
+        public string T { get; private set; }
+        public YubicoResponseStatus Status { get; private set; }
+        public int Timestamp { get; private set; }
+        public int SessionCounter { get; private set; }
+        public int UseCounter { get; private set; }
+        public string Sync { get; private set; }
+        public string Otp { get; private set; }
+        public string Nonce { get; private set; }
+        public IEnumerable<KeyValuePair<string, string>> ResponseMap { get; private set; }
+        public string PublicId { get; private set; }
 
-        /// <summary>
-        /// Get the servers response of the timestamp.
-        /// </summary>
-        /// <returns>timestamp in UTC</returns>
-        String getT();
+        public YubicoResponse(string response)
+        {
+            var reader = new StringReader(response);
+            string line;
+            
+            var responseMap = new SortedDictionary<string, string>();
+            ResponseMap = responseMap;
+            
+            while ((line = reader.ReadLine()) != null)
+            {
+                var unhandled = false;
+                var parts = line.Split(new[] { '=' }, 2);
 
-        /// <summary>
-        /// The response status
-        /// </summary>
-        /// <returns>status of the response</returns>
-        YubicoResponseStatus getStatus();
+                switch (parts[0])
+                {
+                    case "h":
+                        H = parts[1];
+                        break;
+                    case "t":
+                        T = parts[1];
+                        break;
+                    case "status":
+                        var statusCode = parts[1];
+                        if (statusCode.Equals("EMPTY", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.Empty;
+                        }
+                        else if (statusCode.Equals("OK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.Ok;
+                        }
+                        else if (statusCode.Equals("BAD_OTP", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BadOtp;
+                        }
+                        else if (statusCode.Equals("REPLAYED_OTP", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.ReplayedOtp;
+                        }
+                        else if (statusCode.Equals("BAD_SIGNATURE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BadSignature;
+                        }
+                        else if (statusCode.Equals("MISSING_PARAMETER", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.MissingParameter;
+                        }
+                        else if (statusCode.Equals("NO_SUCH_CLIENT", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.NoSuchClient;                                
+                        }
+                        else if (statusCode.Equals("OPERATION_NOT_ALLOWED", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.OperationNotAllowed;
+                        }
+                        else if (statusCode.Equals("BACKEND_ERROR", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BackendError;
+                        }
+                        else if (statusCode.Equals("NOT_ENOUGH_ANSWERS", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.NotEnoughAnswers;
+                        }
+                        else if (statusCode.Equals("REPLAYED_REQUEST", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.ReplayedRequest;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Response doesn't look like a validation response.");
+                        }
+                        break;
+                    case "timestamp":
+                        Timestamp = int.Parse(parts[1]);
+                        break;
+                    case "sessioncounter":
+                        SessionCounter = int.Parse(parts[1]);
+                        break;
+                    case "sessionuse":
+                        UseCounter = int.Parse(parts[1]);
+                        break;
+                    case "sl":
+                        Sync = parts[1];
+                        break;
+                    case "otp":
+                        Otp = parts[1];
+                        break;
+                    case "nonce":
+                        Nonce = parts[1];
+                        break;
+                    default:
+                        unhandled = true;
+                        break;
+                }
+                if (!unhandled)
+                {
+                    responseMap.Add(parts[0], parts[1]);
+                }
+            }
+            if (Status == YubicoResponseStatus.Empty)
+            {
+                throw new ArgumentException("Response doesn't look like a validation response.");
+            }
 
-        /// <summary>
-        /// The YubiKey internal timestamp when OTP was generated
-        /// </summary>
-        /// <returns>YubiKey internal 8hz timestamp</returns>
-        int getTimestamp();
-
-        /// <summary>
-        /// The YubiKey internal sessionCounter
-        /// </summary>
-        /// <returns>the YubiKey session counter, counting up for each key press</returns>
-        int getSessionCounter();
-
-        /// <summary>
-        /// The YubiKey internal useCounter
-        /// </summary>
-        /// <returns>the YubiKey use counter, counts up for each powerup</returns>
-        int getUseCounter();
-
-        /// <summary>
-        /// The Syncronization achieved
-        /// </summary>
-        /// <returns>syncronization achieved in percent</returns>
-        String getSync();
-
-        /// <summary>
-        /// The OTP asked about
-        /// </summary>
-        /// <returns>the OTP that the server is returning a result for</returns>
-        String getOtp();
-
-        /// <summary>
-        /// The nonce that was sent in the request
-        /// </summary>
-        /// <returns>the nonce that was sent to the server in the request</returns>
-        String getNonce();
-
-        /// <summary>
-        /// A map of all results returned
-        /// </summary>
-        /// <returns>map of the results returned from the server</returns>
-        SortedDictionary<String, String> getResponseMap();
-
-        /// <summary>
-        /// The publicId of the OTP this response is about
-        /// </summary>
-        /// <returns>the publicId for the OTP</returns>
-        String getPublicId();
+            if (Otp != null && Otp.Length > 32 && YubicoClient.IsOtpValidFormat(Otp))
+            {
+                PublicId = Otp.Substring(0, Otp.Length - 32);
+            }
+        }        
     }
 }

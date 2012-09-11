@@ -29,9 +29,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 
 namespace YubicoDotNetClient
@@ -42,15 +39,15 @@ namespace YubicoDotNetClient
         {
         }
 
-        public YubicoValidationFailure(String message)
+        public YubicoValidationFailure(string message) : base(message)
         {
         }
 
-        public YubicoValidationFailure(String message, Exception inner)
+        public YubicoValidationFailure(string message, Exception inner) : base(message, inner)
         {
         }
 
-        protected YubicoValidationFailure(SerializationInfo info, StreamingContext context)
+        protected YubicoValidationFailure(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

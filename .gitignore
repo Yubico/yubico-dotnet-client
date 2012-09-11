@@ -1,4 +1,6 @@
 *.suo
+*.user
+*.nupkg
 bin/
 obj/
 _ReSharper.*

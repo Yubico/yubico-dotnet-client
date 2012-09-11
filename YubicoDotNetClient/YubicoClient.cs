@@ -41,7 +41,7 @@ namespace YubicoDotNetClient
     /// </summary>
     /// <example>
     /// YubicoClient client = new YubicoClient(clientId, apiKey);
-    /// YubicoResponse response = client.verify(otp);
+    /// IYubicoResponse response = client.verify(otp);
     /// if(response.getStatus() == YubicoResponseStatus.OK) {
     ///   // validation succeeded
     /// } else {
@@ -133,10 +133,10 @@ namespace YubicoDotNetClient
         /// Do verification of OTP
         /// </summary>
         /// <param name="otp">The OTP from a YubiKey in modhex</param>
-        /// <returns>YubicoResponse indicating status of the request</returns>
+        /// <returns>IYubicoResponse indicating status of the request</returns>
         /// <exception cref="YubicoValidationFailure"/>
         /// <exception cref="FormatException"/>
-        public YubicoResponse verify(String otp)
+        public IYubicoResponse verify(String otp)
         {
             if (!isOtpValidFormat(otp))
             {
@@ -181,7 +181,7 @@ namespace YubicoDotNetClient
             {
                 urls.Add(url + "?" + query);
             }
-            YubicoResponse response = YubicoValidate.validate(urls, userAgent);
+            IYubicoResponse response = YubicoValidate.validate(urls, userAgent);
 
             if (apiKey != null && response.getStatus() != YubicoResponseStatus.BAD_SIGNATURE)
             {

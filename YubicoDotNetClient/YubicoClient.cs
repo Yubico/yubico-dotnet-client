@@ -72,7 +72,7 @@ namespace YubicoDotNetClient
         /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(string clientId)
         {
-            this._clientId = clientId;
+            _clientId = clientId;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace YubicoDotNetClient
         /// <param name="apiKey">ApiKey from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(string clientId, string apiKey)
         {
-            this._clientId = clientId;
+            _clientId = clientId;
             SetApiKey(apiKey);
         }
 
@@ -93,7 +93,7 @@ namespace YubicoDotNetClient
         /// <exception cref="FormatException"/>
         public void SetApiKey(string apiKey)
         {
-            this._apiKey = Convert.FromBase64String(apiKey);
+            _apiKey = Convert.FromBase64String(apiKey);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace YubicoDotNetClient
         /// <param name="sync">Desired sync level in percent</param>
         public void SetSync(string sync)
         {
-            this._sync = sync;
+            _sync = sync;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace YubicoDotNetClient
         /// <param name="urls">list of urls to do validation to</param>
         public void SetUrls(string[] urls)
         {
-            this._apiUrls = urls;
+            _apiUrls = urls;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace YubicoDotNetClient
         /// <param name="nonce">nonce to be used for the next request</param>
         public void SetNonce(string nonce)
         {
-            this._nonce = nonce;
+            _nonce = nonce;
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace YubicoDotNetClient
         /// <param name="userAgent">the user agent to be used in verification requests</param>
         public void SetUserAgent(string userAgent)
         {
-            this._userAgent = userAgent;
+            _userAgent = userAgent;
         }
 
         /// <summary>

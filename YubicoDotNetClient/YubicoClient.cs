@@ -184,7 +184,7 @@ namespace YubicoDotNetClient
             {
                 urls.Add(url + "?" + query);
             }
-            IYubicoResponse response = YubicoValidate.validate(urls, _userAgent);
+            IYubicoResponse response = YubicoValidate.Validate(urls, _userAgent);
 
             if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {

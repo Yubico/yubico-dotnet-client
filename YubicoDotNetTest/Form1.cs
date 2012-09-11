@@ -51,11 +51,11 @@ namespace YubicoDotNetTest
 
         private void submit(object sender, EventArgs e)
         {
-            String otp = otpInput.Text;
-            String clientId = clientInput.Text;
-            String apiKey = keyInput.Text;
-            String sync = syncInput.Text;
-            String nonce = nonceInput.Text;
+            string otp = otpInput.Text;
+            string clientId = clientInput.Text;
+            string apiKey = keyInput.Text;
+            string sync = syncInput.Text;
+            string nonce = nonceInput.Text;
             output.Text = "";
 
             YubicoClient client = new YubicoClient(clientId);

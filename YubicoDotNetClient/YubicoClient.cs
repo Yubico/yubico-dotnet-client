@@ -53,13 +53,13 @@ namespace YubicoDotNetClient
         private const int OtpMaxlength = 48;
         private const int OtpMinlength = 32;
 
-        private readonly String _clientId;
+        private readonly string _clientId;
         private byte[] _apiKey;
-        private String _sync;
-        private String _nonce;
-        private String _userAgent;
+        private string _sync;
+        private string _nonce;
+        private string _userAgent;
 
-        private String[] _apiUrls = {
+        private string[] _apiUrls = {
                                        "https://api.yubico.com/wsapi/2.0/verify",
                                        "https://api2.yubico.com/wsapi/2.0/verify",
                                        "https://api3.yubico.com/wsapi/2.0/verify",
@@ -70,7 +70,7 @@ namespace YubicoDotNetClient
         /// Constructor for YubicoClient with clientId.
         /// </summary>
         /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
-        public YubicoClient(String clientId)
+        public YubicoClient(string clientId)
         {
             this._clientId = clientId;
         }
@@ -80,7 +80,7 @@ namespace YubicoDotNetClient
         /// </summary>
         /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
         /// <param name="apiKey">ApiKey from https://upgrade.yubico.com/getapikey/ </param>
-        public YubicoClient(String clientId, String apiKey)
+        public YubicoClient(string clientId, string apiKey)
         {
             this._clientId = clientId;
             SetApiKey(apiKey);
@@ -91,7 +91,7 @@ namespace YubicoDotNetClient
         /// </summary>
         /// <param name="apiKey">ApiKey from http://upgrade.yubico.com/getapikey/ </param>
         /// <exception cref="FormatException"/>
-        public void SetApiKey(String apiKey)
+        public void SetApiKey(string apiKey)
         {
             this._apiKey = Convert.FromBase64String(apiKey);
         }
@@ -100,7 +100,7 @@ namespace YubicoDotNetClient
         /// Set the desired sync level that the validation server should reach before sending reply.
         /// </summary>
         /// <param name="sync">Desired sync level in percent</param>
-        public void SetSync(String sync)
+        public void SetSync(string sync)
         {
             this._sync = sync;
         }
@@ -109,7 +109,7 @@ namespace YubicoDotNetClient
         /// Set the list of validation urls to do validation against.
         /// </summary>
         /// <param name="urls">list of urls to do validation to</param>
-        public void SetUrls(String[] urls)
+        public void SetUrls(string[] urls)
         {
             this._apiUrls = urls;
         }
@@ -118,7 +118,7 @@ namespace YubicoDotNetClient
         /// Set the nonce to be used for the next requests. If this is unset a random nonce will be used.
         /// </summary>
         /// <param name="nonce">nonce to be used for the next request</param>
-        public void SetNonce(String nonce)
+        public void SetNonce(string nonce)
         {
             this._nonce = nonce;
         }
@@ -127,7 +127,7 @@ namespace YubicoDotNetClient
         /// Set the user agent used in requests. If this isn't set one will be generated.
         /// </summary>
         /// <param name="userAgent">the user agent to be used in verification requests</param>
-        public void SetUserAgent(String userAgent)
+        public void SetUserAgent(string userAgent)
         {
             this._userAgent = userAgent;
         }
@@ -139,7 +139,7 @@ namespace YubicoDotNetClient
         /// <returns>IYubicoResponse indicating status of the request</returns>
         /// <exception cref="YubicoValidationFailure"/>
         /// <exception cref="FormatException"/>
-        public IYubicoResponse Verify(String otp)
+        public IYubicoResponse Verify(string otp)
         {
             if (!IsOtpValidFormat(otp))
             {
@@ -151,7 +151,7 @@ namespace YubicoDotNetClient
                 _nonce = GenerateNonce();
             }
 
-            SortedDictionary<String, String> queryMap = new SortedDictionary<String, String>();
+            SortedDictionary<string, string> queryMap = new SortedDictionary<string, string>();
             queryMap.Add("id", _clientId);
             queryMap.Add("nonce", _nonce);
             queryMap.Add("otp", otp);
@@ -160,8 +160,8 @@ namespace YubicoDotNetClient
             {
                 queryMap.Add("sl", _sync);
             }
-            String query = null;
-            foreach (KeyValuePair<String, String> pair in queryMap)
+            string query = null;
+            foreach (KeyValuePair<string, string> pair in queryMap)
             {
                 if (query == null)
                 {
@@ -179,8 +179,8 @@ namespace YubicoDotNetClient
                 query += "&h=" + Uri.EscapeDataString(DoSignature(query, _apiKey));
             }
 
-            List<String> urls = new List<String>();
-            foreach (String url in _apiUrls)
+            List<string> urls = new List<string>();
+            foreach (string url in _apiUrls)
             {
                 urls.Add(url + "?" + query);
             }
@@ -188,9 +188,9 @@ namespace YubicoDotNetClient
 
             if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {
-                String responseString = null;
-                String serverSignature = null;
-                foreach (KeyValuePair<String, String> pair in response.ResponseMap)
+                string responseString = null;
+                string serverSignature = null;
+                foreach (KeyValuePair<string, string> pair in response.ResponseMap)
                 {
                     if (pair.Key.Equals("h"))
                     {
@@ -210,7 +210,7 @@ namespace YubicoDotNetClient
                         responseString += pair.Key + "=" + pair.Value;
                     }
                 }
-                String clientSignature = DoSignature(responseString, _apiKey);
+                string clientSignature = DoSignature(responseString, _apiKey);
                 if (serverSignature == null || !clientSignature.Equals(serverSignature))
                 {
                     throw new YubicoValidationFailure("Server signature did not match our key.");
@@ -234,14 +234,14 @@ namespace YubicoDotNetClient
             return response;
         }
 
-        private static String DoSignature(String message, byte[] key)
+        private static string DoSignature(string message, byte[] key)
         {
             HMACSHA1 hmac = new HMACSHA1(key);
             byte[] signature = hmac.ComputeHash(Encoding.ASCII.GetBytes(message));
             return Convert.ToBase64String(signature);
         }
 
-        private static String GenerateNonce()
+        private static string GenerateNonce()
         {
             RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
             byte[] nonce = new byte[16];
@@ -254,7 +254,7 @@ namespace YubicoDotNetClient
         /// </summary>
         /// <param name="otp">The otp from a YubiKey in modhex.</param>
         /// <returns>bool indicating valid or not</returns>
-        public static bool IsOtpValidFormat(String otp)
+        public static bool IsOtpValidFormat(string otp)
         {
             if (otp.Length > OtpMaxlength || otp.Length < OtpMinlength)
             {

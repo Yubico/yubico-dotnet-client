@@ -53,13 +53,13 @@ namespace YubicoDotNetClient
         private const int OtpMaxlength = 48;
         private const int OtpMinlength = 32;
 
-        private String clientId;
-        private byte[] apiKey = null;
-        private String sync;
-        private String nonce;
-        private String userAgent;
+        private readonly String _clientId;
+        private byte[] _apiKey;
+        private String _sync;
+        private String _nonce;
+        private String _userAgent;
 
-        private String[] apiUrls = {
+        private String[] _apiUrls = {
                                        "https://api.yubico.com/wsapi/2.0/verify",
                                        "https://api2.yubico.com/wsapi/2.0/verify",
                                        "https://api3.yubico.com/wsapi/2.0/verify",
@@ -72,7 +72,7 @@ namespace YubicoDotNetClient
         /// <param name="clientId">ClientId from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(String clientId)
         {
-            this.clientId = clientId;
+            this._clientId = clientId;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace YubicoDotNetClient
         /// <param name="apiKey">ApiKey from https://upgrade.yubico.com/getapikey/ </param>
         public YubicoClient(String clientId, String apiKey)
         {
-            this.clientId = clientId;
+            this._clientId = clientId;
             SetApiKey(apiKey);
         }
 
@@ -93,7 +93,7 @@ namespace YubicoDotNetClient
         /// <exception cref="FormatException"/>
         public void SetApiKey(String apiKey)
         {
-            this.apiKey = Convert.FromBase64String(apiKey);
+            this._apiKey = Convert.FromBase64String(apiKey);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace YubicoDotNetClient
         /// <param name="sync">Desired sync level in percent</param>
         public void SetSync(String sync)
         {
-            this.sync = sync;
+            this._sync = sync;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace YubicoDotNetClient
         /// <param name="urls">list of urls to do validation to</param>
         public void SetUrls(String[] urls)
         {
-            this.apiUrls = urls;
+            this._apiUrls = urls;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace YubicoDotNetClient
         /// <param name="nonce">nonce to be used for the next request</param>
         public void SetNonce(String nonce)
         {
-            this.nonce = nonce;
+            this._nonce = nonce;
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace YubicoDotNetClient
         /// <param name="userAgent">the user agent to be used in verification requests</param>
         public void SetUserAgent(String userAgent)
         {
-            this.userAgent = userAgent;
+            this._userAgent = userAgent;
         }
 
         /// <summary>
@@ -146,19 +146,19 @@ namespace YubicoDotNetClient
                 throw new FormatException("otp format is invalid");
             }
 
-            if (nonce == null)
+            if (_nonce == null)
             {
-                nonce = GenerateNonce();
+                _nonce = GenerateNonce();
             }
 
             SortedDictionary<String, String> queryMap = new SortedDictionary<String, String>();
-            queryMap.Add("id", clientId);
-            queryMap.Add("nonce", nonce);
+            queryMap.Add("id", _clientId);
+            queryMap.Add("nonce", _nonce);
             queryMap.Add("otp", otp);
             queryMap.Add("timestamp", "1");
-            if (sync != null)
+            if (_sync != null)
             {
-                queryMap.Add("sl", sync);
+                queryMap.Add("sl", _sync);
             }
             String query = null;
             foreach (KeyValuePair<String, String> pair in queryMap)
@@ -174,19 +174,19 @@ namespace YubicoDotNetClient
                 query += pair.Key + "=" +  Uri.EscapeDataString(pair.Value);
             }
 
-            if (apiKey != null)
+            if (_apiKey != null)
             {
-                query += "&h=" + Uri.EscapeDataString(DoSignature(query, apiKey));
+                query += "&h=" + Uri.EscapeDataString(DoSignature(query, _apiKey));
             }
 
             List<String> urls = new List<String>();
-            foreach (String url in apiUrls)
+            foreach (String url in _apiUrls)
             {
                 urls.Add(url + "?" + query);
             }
-            IYubicoResponse response = YubicoValidate.validate(urls, userAgent);
+            IYubicoResponse response = YubicoValidate.validate(urls, _userAgent);
 
-            if (apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
+            if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {
                 String responseString = null;
                 String serverSignature = null;
@@ -210,7 +210,7 @@ namespace YubicoDotNetClient
                         responseString += pair.Key + "=" + pair.Value;
                     }
                 }
-                String clientSignature = DoSignature(responseString, apiKey);
+                String clientSignature = DoSignature(responseString, _apiKey);
                 if (serverSignature == null || !clientSignature.Equals(serverSignature))
                 {
                     throw new YubicoValidationFailure("Server signature did not match our key.");
@@ -219,7 +219,7 @@ namespace YubicoDotNetClient
 
             if (response != null && response.Status == YubicoResponseStatus.OK)
             {
-                if (!response.Nonce.Equals(nonce))
+                if (!response.Nonce.Equals(_nonce))
                 {
                     throw new YubicoValidationFailure("Nonce in request and response does not match, man in the middle?");
                 }
@@ -230,7 +230,7 @@ namespace YubicoDotNetClient
             }
 
             // set nonce to null so we will generate a new one for the next request
-            nonce = null;
+            _nonce = null;
             return response;
         }
 

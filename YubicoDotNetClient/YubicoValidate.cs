@@ -30,8 +30,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using System.Net;
 using System.IO;
 
@@ -39,22 +41,24 @@ namespace YubicoDotNetClient
 {
     class YubicoValidate
     {
-        public static IYubicoResponse Validate(List<String> urls, String userAgent)
+        public static IYubicoResponse Validate(IEnumerable<string> urls, string userAgent)
         {
             var tasks = new List<Task<IYubicoResponse>>();
-            var cancellation = new CancellationTokenSource();
-            foreach (String url in urls)
-            {                
-                var task = new Task<IYubicoResponse>(() => DoVerify(url, userAgent), cancellation.Token);
-                task.ContinueWith((t) => { }, TaskContinuationOptions.OnlyOnFaulted);
+            var cancellation = new CancellationTokenSource();            
+            
+            foreach (var url in urls)
+            {
+                var thisUrl = url;
+                var task = new Task<IYubicoResponse>(() => DoVerify(thisUrl, userAgent), cancellation.Token);
+                task.ContinueWith(t => { }, TaskContinuationOptions.OnlyOnFaulted);
                 tasks.Add(task);
                 task.Start();
             }
             while (tasks.Count != 0)
             {
                 // TODO: handle exceptions from the verify task. Better to be able to propagate cause for error.
-                int completed = Task.WaitAny(tasks.ToArray());
-                Task<IYubicoResponse> task = tasks[completed];
+                var completed = Task.WaitAny(tasks.Cast<Task>().ToArray());
+                var task = tasks[completed];
                 tasks.Remove(task);
                 if (task.Result != null)
                 {
@@ -62,50 +66,64 @@ namespace YubicoDotNetClient
                     return task.Result;
                 }
             }
+
             return null;
         }
 
-        private static IYubicoResponse DoVerify(String url, String userAgent)
+        private static IYubicoResponse DoVerify(string url, string userAgent)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);            
+            
             if (userAgent == null)
             {
-                request.UserAgent = "YubicoDotNetClient version:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                request.UserAgent = "YubicoDotNetClient version:" + Assembly.GetExecutingAssembly().GetName().Version;
             }
             else
             {
                 request.UserAgent = userAgent;
             }
-
+            
             request.Timeout = 15000;
 
             HttpWebResponse rawResponse;
             try
             {
-                rawResponse = (HttpWebResponse)request.GetResponse();                
+                rawResponse = (HttpWebResponse)request.GetResponse();
             }
             catch (WebException)
             {
                 return null;
             }
-            
-            var dataStream = rawResponse.GetResponseStream();
-            var reader = new StreamReader(dataStream);
-            IYubicoResponse response;
-            try
+
+            using (var dataStream = rawResponse.GetResponseStream())
             {
-                response = new YubicoResponse(reader.ReadToEnd());
+                if (dataStream != null)
+                {
+                    using (var reader = new StreamReader(dataStream))
+                    {
+                        IYubicoResponse response;
+                        
+                        try
+                        {
+                            response = new YubicoResponse(reader.ReadToEnd());
+                        }
+                        catch (ArgumentException)
+                        {
+                            return null;
+                        }
+
+                        if (response.Status == YubicoResponseStatus.REPLAYED_REQUEST)
+                        {
+                            //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
+                            return null;
+                        }
+
+                        return response;
+                    }
+                }
             }
-            catch (ArgumentException)
-            {
-                return null;
-            }
-            if (response.Status == YubicoResponseStatus.REPLAYED_REQUEST)
-            {
-                //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
-                return null;
-            }
-            return response;
+
+            throw new YubicoValidationException();
         }
     }
 }

@@ -61,20 +61,20 @@ namespace YubicoDotNetTest
             YubicoClient client = new YubicoClient(clientId);
             if (!apiKey.Equals(""))
             {
-                client.setApiKey(apiKey);
+                client.SetApiKey(apiKey);
             }
             if (!sync.Equals(""))
             {
-                client.setSync(sync);
+                client.SetSync(sync);
             }
             if (!nonce.Equals(""))
             {
-                client.setNonce(nonce);
+                client.SetNonce(nonce);
             }
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                IYubicoResponse response = client.verify(otp);
+                IYubicoResponse response = client.Verify(otp);
                 sw.Stop();
                 if (response != null)
                 {

@@ -42,15 +42,15 @@ namespace YubicoDotNetClient
         {
         }
 
-        public YubicoValidationException(String message)
+        public YubicoValidationException(String message) : base(message)
         {
         }
 
-        public YubicoValidationException(String message, Exception inner)
+        public YubicoValidationException(String message, Exception inner) : base(message, inner)
         {
         }
 
-        protected YubicoValidationException(SerializationInfo info, StreamingContext context)
+        protected YubicoValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

@@ -79,9 +79,9 @@ namespace YubicoDotNetTest
                 if (response != null)
                 {
                     output.Text = "response in: " + sw.ElapsedMilliseconds + "\r\n" +
-                        response.getStatus().ToString() + "\r\n" +
-                        response.getPublicId() + "\r\n" +
-                        response.getUseCounter() + " " + response.getSessionCounter();
+                        response.Status.ToString() + "\r\n" +
+                        response.PublicId + "\r\n" +
+                        response.UseCounter + " " + response.SessionCounter;
                 }
                 else
                 {

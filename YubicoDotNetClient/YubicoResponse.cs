@@ -38,22 +38,24 @@ namespace YubicoDotNetClient
 {
     class YubicoResponse : IYubicoResponse
     {
-        private String h;
-        private String t;
-        private YubicoResponseStatus status;
-        private int timestamp;
-        private int sessionCounter;
-        private int useCounter;
-        private String sync;
-        private String otp;
-        private String nonce;
-        private SortedDictionary<String, String> responseMap;
+        public string H { get; private set; }
+        public string T { get; private set; }
+        public YubicoResponseStatus Status { get; private set; }
+        public int Timestamp { get; private set; }
+        public int SessionCounter { get; private set; }
+        public int UseCounter { get; private set; }
+        public string Sync { get; private set; }
+        public string Otp { get; private set; }
+        public string Nonce { get; private set; }
+        public IEnumerable<KeyValuePair<string, string>> ResponseMap { get; private set; }
+        public string PublicId { get; private set; }
 
         public YubicoResponse(String response)
         {
             StringReader reader = new StringReader(response);
             String line;
-            responseMap = new SortedDictionary<String, String>();
+            var responseMap = new SortedDictionary<String, String>();
+            ResponseMap = responseMap;
             while ((line = reader.ReadLine()) != null)
             {
                 bool unhandled = false;
@@ -61,31 +63,31 @@ namespace YubicoDotNetClient
                 switch (parts[0])
                 {
                     case "h":
-                        h = parts[1];
+                        H = parts[1];
                         break;
                     case "t":
-                        t = parts[1];
+                        T = parts[1];
                         break;
                     case "status":
-                        status = (YubicoResponseStatus)Enum.Parse(typeof(YubicoResponseStatus), parts[1], true);
+                        Status = (YubicoResponseStatus)Enum.Parse(typeof(YubicoResponseStatus), parts[1], true);
                         break;
                     case "timestamp":
-                        timestamp = int.Parse(parts[1]);
+                        Timestamp = int.Parse(parts[1]);
                         break;
                     case "sessioncounter":
-                        sessionCounter = int.Parse(parts[1]);
+                        SessionCounter = int.Parse(parts[1]);
                         break;
                     case "sessionuse":
-                        useCounter = int.Parse(parts[1]);
+                        UseCounter = int.Parse(parts[1]);
                         break;
                     case "sl":
-                        sync = parts[1];
+                        Sync = parts[1];
                         break;
                     case "otp":
-                        otp = parts[1];
+                        Otp = parts[1];
                         break;
                     case "nonce":
-                        nonce = parts[1];
+                        Nonce = parts[1];
                         break;
                     default:
                         unhandled = true;
@@ -96,69 +98,10 @@ namespace YubicoDotNetClient
                     responseMap.Add(parts[0], parts[1]);
                 }
             }
-            if (status == YubicoResponseStatus.EMPTY)
+            if (Status == YubicoResponseStatus.EMPTY)
             {
                 throw new ArgumentException("Response doesn't look like a validation response.");
             }
-        }
-
-        public String getH()
-        {
-            return h;
-        }
-
-        public String getT()
-        {
-            return t;
-        }
-
-        public YubicoResponseStatus getStatus()
-        {
-            return status;
-        }
-
-        public int getTimestamp()
-        {
-            return timestamp;
-        }
-
-        public int getSessionCounter()
-        {
-            return sessionCounter;
-        }
-
-        public int getUseCounter()
-        {
-            return useCounter;
-        }
-
-        public String getSync()
-        {
-            return sync;
-        }
-
-        public String getOtp()
-        {
-            return otp;
-        }
-
-        public String getNonce()
-        {
-            return nonce;
-        }
-
-        public SortedDictionary<String, String> getResponseMap()
-        {
-            return responseMap;
-        }
-
-        public String getPublicId()
-        {
-            if (otp == null || !YubicoClient.isOtpValidFormat(otp))
-            {
-                return null;
-            }
-            return otp.Substring(0, otp.Length - 32);
         }
     }
 }

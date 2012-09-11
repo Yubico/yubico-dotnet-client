@@ -9,7 +9,7 @@ Usage
 
 YubicoClient client = new YubicoClient(clientId, apiKey);
 YubicoResponse response = client.Verify(otp);
-if(response.Status == YubicoResponseStatus.OK) 
+if(response.Status == YubicoResponseStatus.Ok) 
 {
   // validation success
 } 

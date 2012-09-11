@@ -39,7 +39,7 @@ using System.IO;
 
 namespace YubicoDotNetClient
 {
-    class YubicoValidate
+    public sealed class YubicoValidate
     {
         public static IYubicoResponse Validate(IEnumerable<string> urls, string userAgent)
         {

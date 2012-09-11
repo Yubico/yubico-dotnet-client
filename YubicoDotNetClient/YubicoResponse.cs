@@ -34,7 +34,7 @@ using System.IO;
 
 namespace YubicoDotNetClient
 {
-    class YubicoResponse : IYubicoResponse
+    public sealed class YubicoResponse : IYubicoResponse
     {
         public string H { get; private set; }
         public string T { get; private set; }

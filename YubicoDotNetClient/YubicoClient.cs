@@ -48,7 +48,7 @@ namespace YubicoDotNetClient
     ///  // validation failure
     /// }
     /// </example>
-    public class YubicoClient
+    public sealed class YubicoClient
     {
         private const int OtpMaxlength = 48;
         private const int OtpMinlength = 32;

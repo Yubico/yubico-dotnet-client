@@ -103,7 +103,7 @@ namespace YubicoDotNetClient
             {
                 return null;
             }
-            if (response.getStatus() == YubicoResponseStatus.REPLAYED_REQUEST)
+            if (response.Status == YubicoResponseStatus.REPLAYED_REQUEST)
             {
                 //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
                 return null;

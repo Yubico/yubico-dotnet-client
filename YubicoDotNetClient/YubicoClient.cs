@@ -183,11 +183,11 @@ namespace YubicoDotNetClient
             }
             IYubicoResponse response = YubicoValidate.validate(urls, userAgent);
 
-            if (apiKey != null && response.getStatus() != YubicoResponseStatus.BAD_SIGNATURE)
+            if (apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
             {
                 String responseString = null;
                 String serverSignature = null;
-                foreach (KeyValuePair<String, String> pair in response.getResponseMap())
+                foreach (KeyValuePair<String, String> pair in response.ResponseMap)
                 {
                     if (pair.Key.Equals("h"))
                     {
@@ -214,13 +214,13 @@ namespace YubicoDotNetClient
                 }
             }
 
-            if (response != null && response.getStatus() == YubicoResponseStatus.OK)
+            if (response != null && response.Status == YubicoResponseStatus.OK)
             {
-                if (!response.getNonce().Equals(nonce))
+                if (!response.Nonce.Equals(nonce))
                 {
                     throw new YubicoValidationFailure("Nonce in request and response does not match, man in the middle?");
                 }
-                else if (!response.getOtp().Equals(otp))
+                else if (!response.Otp.Equals(otp))
                 {
                     throw new YubicoValidationFailure("OTP in request and response does not match, man in the middle?");
                 }

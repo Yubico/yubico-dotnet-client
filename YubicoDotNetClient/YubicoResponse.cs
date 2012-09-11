@@ -70,7 +70,55 @@ namespace YubicoDotNetClient
                         T = parts[1];
                         break;
                     case "status":
-                        Status = (YubicoResponseStatus)Enum.Parse(typeof(YubicoResponseStatus), parts[1], true);
+                        var statusCode = parts[1];
+                        if (statusCode.Equals("EMPTY", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.Empty;
+                        }
+                        else if (statusCode.Equals("OK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.Ok;
+                        }
+                        else if (statusCode.Equals("BAD_OTP", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BadOtp;
+                        }
+                        else if (statusCode.Equals("REPLAYED_OTP", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.ReplayedOtp;
+                        }
+                        else if (statusCode.Equals("BAD_SIGNATURE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BadSignature;
+                        }
+                        else if (statusCode.Equals("MISSING_PARAMETER", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.MissingParameter;
+                        }
+                        else if (statusCode.Equals("NO_SUCH_CLIENT", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.NoSuchClient;                                
+                        }
+                        else if (statusCode.Equals("OPERATION_NOT_ALLOWED", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.OperationNotAllowed;
+                        }
+                        else if (statusCode.Equals("BACKEND_ERROR", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.BackendError;
+                        }
+                        else if (statusCode.Equals("NOT_ENOUGH_ANSWERS", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.NotEnoughAnswers;
+                        }
+                        else if (statusCode.Equals("REPLAYED_REQUEST", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Status = YubicoResponseStatus.ReplayedRequest;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Response doesn't look like a validation response.");
+                        }
                         break;
                     case "timestamp":
                         Timestamp = int.Parse(parts[1]);
@@ -99,7 +147,7 @@ namespace YubicoDotNetClient
                     responseMap.Add(parts[0], parts[1]);
                 }
             }
-            if (Status == YubicoResponseStatus.EMPTY)
+            if (Status == YubicoResponseStatus.Empty)
             {
                 throw new ArgumentException("Response doesn't look like a validation response.");
             }

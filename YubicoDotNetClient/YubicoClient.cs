@@ -189,7 +189,7 @@ namespace YubicoDotNetClient
             var urls = _apiUrls.Select(url => string.Format("{0}?{1}", url, queryBuilder)).ToList();
             var response = YubicoValidate.Validate(urls, _userAgent);            
 
-            if (_apiKey != null && response.Status != YubicoResponseStatus.BAD_SIGNATURE)
+            if (_apiKey != null && response.Status != YubicoResponseStatus.BadSignature)
             {
                 StringBuilder responseStringBuilder = null;
                 string serverSignature = null;
@@ -223,7 +223,7 @@ namespace YubicoDotNetClient
                 }
             }
 
-            if (response != null && response.Status == YubicoResponseStatus.OK)
+            if (response != null && response.Status == YubicoResponseStatus.Ok)
             {
                 if (!response.Nonce.Equals(_nonce))
                 {

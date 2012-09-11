@@ -32,16 +32,16 @@ namespace YubicoDotNetClient
 {
     public enum YubicoResponseStatus
     {
-        EMPTY,
-        OK,
-        BAD_OTP,
-        REPLAYED_OTP,
-        BAD_SIGNATURE,
-        MISSING_PARAMETER,
-        NO_SUCH_CLIENT,
-        OPERATION_NOT_ALLOWED,
-        BACKEND_ERROR,
-        NOT_ENOUGH_ANSWERS,
-        REPLAYED_REQUEST
+        Empty,
+        Ok,
+        BadOtp,
+        ReplayedOtp,
+        BadSignature,
+        MissingParameter,
+        NoSuchClient,
+        OperationNotAllowed,
+        BackendError,
+        NotEnoughAnswers,
+        ReplayedRequest
     }
 }

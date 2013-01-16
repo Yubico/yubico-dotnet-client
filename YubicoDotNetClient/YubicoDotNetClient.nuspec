@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>YubicoDotNetClient</id>
-    <version>1.0.0.0</version>
+    <version>1.1.0.0</version>
     <title>YubicoDotNetClient</title>
     <authors>klas@yubico.com</authors>
     <owners>klas@yubico.com</owners>

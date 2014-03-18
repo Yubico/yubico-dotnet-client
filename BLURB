@@ -1,0 +1,7 @@
+Author: Yubico
+Basename: yubico-dotnet-client
+Homepage: http://opensource.yubico.com/yubico-dotnet-client/
+License: BSD-2-Clause
+Name: yubico-dotnet-client
+Project: yubico-dotnet-client
+Summary: Yubico validation protocol 2.0 client

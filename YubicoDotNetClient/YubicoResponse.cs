@@ -47,8 +47,9 @@ namespace YubicoDotNetClient
         public string Nonce { get; private set; }
         public IEnumerable<KeyValuePair<string, string>> ResponseMap { get; private set; }
         public string PublicId { get; private set; }
+        public string Url { get; private set; }
 
-        public YubicoResponse(string response)
+        public YubicoResponse(string response, string url)
         {
             var reader = new StringReader(response);
             string line;
@@ -156,6 +157,8 @@ namespace YubicoDotNetClient
             {
                 PublicId = Otp.Substring(0, Otp.Length - 32);
             }
+
+            Url = url;
         }        
     }
 }

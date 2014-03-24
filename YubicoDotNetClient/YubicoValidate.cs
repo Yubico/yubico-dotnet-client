@@ -106,7 +106,7 @@ namespace YubicoDotNetClient
                         
                         try
                         {
-                            response = new YubicoResponse(reader.ReadToEnd());
+                            response = new YubicoResponse(reader.ReadToEnd(), url);
                         }
                         catch (ArgumentException)
                         {

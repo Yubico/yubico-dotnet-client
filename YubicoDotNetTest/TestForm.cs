@@ -77,6 +77,7 @@ namespace YubicoDotNetTest
                     OutputField.AppendText(string.Format("Status: {0}{1}", response.Status, Environment.NewLine));
                     OutputField.AppendText(string.Format("Public ID: {0}{1}", response.PublicId, Environment.NewLine));
                     OutputField.AppendText(string.Format("Use/Session Counter: {0} {1}{2}", response.UseCounter, response.SessionCounter, Environment.NewLine));
+                    OutputField.AppendText(string.Format("Url: {0}", response.Url));
                 }
                 else
                 {

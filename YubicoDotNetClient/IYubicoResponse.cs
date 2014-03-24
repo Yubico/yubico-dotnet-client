@@ -99,5 +99,11 @@ namespace YubicoDotNetClient
         /// </summary>
         /// <returns>the publicId for the OTP</returns>
         string PublicId { get; }
+
+        /// <summary>
+        /// The URL used to get this response
+        /// </summary>
+        /// <returns>the URL where this response came from</returns>
+        string Url { get; }
     }
 }

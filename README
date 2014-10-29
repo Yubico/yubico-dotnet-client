@@ -1,7 +1,9 @@
 == Yubico dotnet client ==
 
 Validation protocol 2.0 client for dotNet.
-To use this with YubiCloud you will need a free clientId and apiKey from https://upgrade.yubico.com/getapikey/
+To use this with YubiCloud you will need a free clientId and apiKey from https://upgrade.yubico.com/getapikey
+
+For more details on how to use YubiKey OTP libraries, visit https://developers.yubico.com/OTP[developers.yubico.com/OTP].
 
 === Usage ===
 

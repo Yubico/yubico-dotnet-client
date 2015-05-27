@@ -10,7 +10,7 @@ For more details on how to use YubiKey OTP libraries, visit https://developers.y
 [source, csharp]
 ----
 YubicoClient client = new YubicoClient(clientId, apiKey);
-YubicoResponse response = client.Verify(otp);
+IYubicoResponse response = client.Verify(otp);
 if(response.Status == YubicoResponseStatus.Ok) 
 {
   // validation success

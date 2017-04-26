@@ -23,6 +23,7 @@
     <Compile Include="..\YubicoDotNetClient\YubicoClient.cs" Link="YubicoClient.cs" />
     <Compile Include="..\YubicoDotNetClient\YubicoResponse.cs" Link="YubicoResponse.cs" />
     <Compile Include="..\YubicoDotNetClient\YubicoResponseStatus.cs" Link="YubicoResponseStatus.cs" />
+    <Compile Include="..\YubicoDotNetClient\YubicoValidate.cs" Link="YubicoValidate.cs" />
   </ItemGroup>
 
 </Project>

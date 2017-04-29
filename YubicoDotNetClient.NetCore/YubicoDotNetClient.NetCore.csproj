@@ -24,6 +24,8 @@
     <Compile Include="..\YubicoDotNetClient\YubicoResponse.cs" Link="YubicoResponse.cs" />
     <Compile Include="..\YubicoDotNetClient\YubicoResponseStatus.cs" Link="YubicoResponseStatus.cs" />
     <Compile Include="..\YubicoDotNetClient\YubicoValidate.cs" Link="YubicoValidate.cs" />
+    <Compile Include="..\YubicoDotNetClient\YubicoValidationException.cs" Link="YubicoValidationException.cs" />
+    <Compile Include="..\YubicoDotNetClient\YubicoValidationFailure.cs" Link="YubicoValidationFailure.cs" />
   </ItemGroup>
 
 </Project>

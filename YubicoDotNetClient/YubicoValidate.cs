@@ -92,9 +92,9 @@ namespace YubicoDotNetClient
             try
             {
 #if NETCORE
-				rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
 #else
-				rawResponse = (HttpWebResponse)request.GetResponse();
+                rawResponse = (HttpWebResponse)request.GetResponse();
 #endif
             }
             catch (WebException)

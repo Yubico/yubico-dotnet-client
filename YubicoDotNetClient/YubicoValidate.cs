@@ -75,6 +75,7 @@ namespace YubicoDotNetClient
         {
             var request = (HttpWebRequest)WebRequest.Create(url);            
             
+#if !NETCORE
             if (userAgent == null)
             {
                 request.UserAgent = "YubicoDotNetClient version:" + Assembly.GetExecutingAssembly().GetName().Version;
@@ -85,11 +86,16 @@ namespace YubicoDotNetClient
             }
             
             request.Timeout = 15000;
+#endif
 
             HttpWebResponse rawResponse;
             try
             {
+#if NETCORE
+                rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+#else
                 rawResponse = (HttpWebResponse)request.GetResponse();
+#endif
             }
             catch (WebException)
             {

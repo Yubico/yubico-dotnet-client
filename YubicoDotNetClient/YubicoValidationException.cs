@@ -1,5 +1,6 @@
 ﻿/**
  * Copyright (c) 2012, Yubico AB.  All rights reserved.
+ * Copyright (c) 2017, Y56380X.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,7 +30,9 @@
  */
 
 using System;
+#if !NETCORE
 using System.Runtime.Serialization;
+#endif
 
 namespace YubicoDotNetClient
 {
@@ -47,8 +50,10 @@ namespace YubicoDotNetClient
         {
         }
 
+#if !NETCORE
         protected YubicoValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+#endif
     }
 }

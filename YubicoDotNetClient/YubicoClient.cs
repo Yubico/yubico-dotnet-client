@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace YubicoDotNetClient
 {
@@ -144,7 +145,7 @@ namespace YubicoDotNetClient
         /// <returns>IYubicoResponse indicating status of the request</returns>
         /// <exception cref="YubicoValidationFailure"/>
         /// <exception cref="FormatException"/>
-        public IYubicoResponse Verify(string otp)
+        public async Task<IYubicoResponse> VerifyAsync(string otp)
         {
             if (!IsOtpValidFormat(otp))
             {
@@ -190,9 +191,9 @@ namespace YubicoDotNetClient
             }
 
             var urls = _apiUrls.Select(url => string.Format("{0}?{1}", url, queryBuilder)).ToList();
-            var response = YubicoValidate.Validate(urls, _userAgent);            
+            var response = await YubicoValidate.ValidateAsync(urls, _userAgent);
 
-            if (_apiKey != null && response.Status != YubicoResponseStatus.BadSignature)
+            if (_apiKey != null && response != null && response.Status != YubicoResponseStatus.BadSignature)
             {
                 StringBuilder responseStringBuilder = null;
                 string serverSignature = null;

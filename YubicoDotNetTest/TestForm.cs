@@ -43,7 +43,7 @@ namespace YubicoDotNetTest
             InitializeComponent();
         }
 
-        private void Submit(object sender, EventArgs e)
+        private async void Submit(object sender, EventArgs e)
         {
             var otp = OtpInput.Text;
             var clientId = ClientIdInput.Text;
@@ -69,7 +69,7 @@ namespace YubicoDotNetTest
             try
             {
                 var sw = Stopwatch.StartNew();
-                var response = client.Verify(otp);
+                var response = await client.VerifyAsync(otp);
                 sw.Stop();
                 if (response != null)
                 {

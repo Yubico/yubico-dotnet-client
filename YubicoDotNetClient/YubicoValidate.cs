@@ -44,8 +44,8 @@ namespace YubicoDotNetClient
         public static IYubicoResponse Validate(IEnumerable<string> urls, string userAgent)
         {
             var tasks = new List<Task<IYubicoResponse>>();
-            var cancellation = new CancellationTokenSource();            
-            
+            var cancellation = new CancellationTokenSource();
+
             foreach (var url in urls)
             {
                 var thisUrl = url;
@@ -73,9 +73,9 @@ namespace YubicoDotNetClient
 
         private static IYubicoResponse DoVerify(string url, string userAgent)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);            
-            
-#if !NETCORE
+            var request = (HttpWebRequest)WebRequest.Create(url);
+
+#if NET451
             if (userAgent == null)
             {
                 request.UserAgent = "YubicoDotNetClient version:" + Assembly.GetExecutingAssembly().GetName().Version;
@@ -84,17 +84,17 @@ namespace YubicoDotNetClient
             {
                 request.UserAgent = userAgent;
             }
-            
+
             request.Timeout = 15000;
 #endif
 
             HttpWebResponse rawResponse;
             try
             {
-#if NETCORE
-                rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
-#else
+#if NET451
                 rawResponse = (HttpWebResponse)request.GetResponse();
+#else
+                rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
 #endif
             }
             catch (WebException)
@@ -109,7 +109,7 @@ namespace YubicoDotNetClient
                     using (var reader = new StreamReader(dataStream))
                     {
                         IYubicoResponse response;
-                        
+
                         try
                         {
                             response = new YubicoResponse(reader.ReadToEnd(), url);

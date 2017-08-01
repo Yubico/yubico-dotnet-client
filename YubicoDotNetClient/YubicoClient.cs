@@ -1,6 +1,5 @@
 ﻿/**
  * Copyright (c) 2012, Yubico AB.  All rights reserved.
- * Copyright (c) 2017, Y56380X.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -256,10 +255,10 @@ namespace YubicoDotNetClient
 
         private static string GenerateNonce()
         {
-#if NETCORE
-            using (var random = RandomNumberGenerator.Create())
+#if NET451
+            using(var random = new RNGCryptoServiceProvider())
 #else
-            using (var random = new RNGCryptoServiceProvider())
+            using (var random = RandomNumberGenerator.Create())
 #endif
             {
                 var nonce = new byte[16];

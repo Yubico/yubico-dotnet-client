@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Threading;
 
 namespace YubicoDotNetClient
 {
@@ -44,19 +45,29 @@ namespace YubicoDotNetClient
 
         public async static Task<IYubicoResponse> ValidateAsync(IEnumerable<string> urls, string userAgent)
         {
+            var tasks = new List<Task<IYubicoResponse>>();
+            var tokenSource = new CancellationTokenSource();
+
             foreach (var url in urls)
             {
-                var result = await DoVerifyAsync(url, userAgent);
-                if (result != null)
+                tasks.Add(DoVerifyAsync(url, userAgent, tokenSource.Token));
+            }
+
+            while (tasks.Count != 0)
+            {
+                var completedTask = await Task.WhenAny(tasks.ToArray());
+                tasks.Remove(completedTask);
+                if (completedTask.Result != null)
                 {
-                    return result;
+                    tokenSource.Cancel();
+                    return completedTask.Result;
                 }
             }
 
             return null;
         }
 
-        private async static Task<IYubicoResponse> DoVerifyAsync(string url, string userAgent)
+        private async static Task<IYubicoResponse> DoVerifyAsync(string url, string userAgent, CancellationToken token)
         {
             var request = new HttpRequestMessage
             {
@@ -67,14 +78,17 @@ namespace YubicoDotNetClient
 
             try
             {
-                var response = await _httpClient.SendAsync(request);
-                if (!response.IsSuccessStatusCode)
+                var response = await _httpClient.SendAsync(request, token);
+
+                token.ThrowIfCancellationRequested();
+                if(!response.IsSuccessStatusCode)
                 {
                     return null;
                 }
 
                 IYubicoResponse yubiResponse;
                 var responseContent = await response.Content.ReadAsStringAsync();
+                token.ThrowIfCancellationRequested();
 
                 try
                 {
@@ -85,6 +99,7 @@ namespace YubicoDotNetClient
                     return null;
                 }
 
+                token.ThrowIfCancellationRequested();
                 if (yubiResponse.Status == YubicoResponseStatus.ReplayedRequest)
                 {
                     //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");

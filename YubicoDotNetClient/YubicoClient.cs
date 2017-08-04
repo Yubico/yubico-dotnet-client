@@ -1,6 +1,5 @@
 ﻿/**
  * Copyright (c) 2012, Yubico AB.  All rights reserved.
- * Copyright (c) 2017, Y56380X.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,6 +33,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace YubicoDotNetClient
 {
@@ -145,7 +145,7 @@ namespace YubicoDotNetClient
         /// <returns>IYubicoResponse indicating status of the request</returns>
         /// <exception cref="YubicoValidationFailure"/>
         /// <exception cref="FormatException"/>
-        public IYubicoResponse Verify(string otp)
+        public async Task<IYubicoResponse> VerifyAsync(string otp)
         {
             if (!IsOtpValidFormat(otp))
             {
@@ -191,9 +191,9 @@ namespace YubicoDotNetClient
             }
 
             var urls = _apiUrls.Select(url => string.Format("{0}?{1}", url, queryBuilder)).ToList();
-            var response = YubicoValidate.Validate(urls, _userAgent);            
+            var response = await YubicoValidate.ValidateAsync(urls, _userAgent);
 
-            if (_apiKey != null && response.Status != YubicoResponseStatus.BadSignature)
+            if (_apiKey != null && response != null && response.Status != YubicoResponseStatus.BadSignature)
             {
                 StringBuilder responseStringBuilder = null;
                 string serverSignature = null;
@@ -256,10 +256,10 @@ namespace YubicoDotNetClient
 
         private static string GenerateNonce()
         {
-#if NETCORE
-            using (var random = RandomNumberGenerator.Create())
+#if NET451
+            using(var random = new RNGCryptoServiceProvider())
 #else
-            using (var random = new RNGCryptoServiceProvider())
+            using (var random = RandomNumberGenerator.Create())
 #endif
             {
                 var nonce = new byte[16];

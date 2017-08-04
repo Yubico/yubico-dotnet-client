@@ -30,107 +30,89 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Net;
-using System.IO;
+using System.Net.Http;
+using System.Threading;
 
 namespace YubicoDotNetClient
 {
     public sealed class YubicoValidate
     {
-        public static IYubicoResponse Validate(IEnumerable<string> urls, string userAgent)
+        private static HttpClient _httpClient = new HttpClient
+        {
+            Timeout = new TimeSpan(0, 0, 0, 5) // 5 seconds
+        };
+
+        public async static Task<IYubicoResponse> ValidateAsync(IEnumerable<string> urls, string userAgent)
         {
             var tasks = new List<Task<IYubicoResponse>>();
-            var cancellation = new CancellationTokenSource();            
-            
+            var tokenSource = new CancellationTokenSource();
+
             foreach (var url in urls)
             {
-                var thisUrl = url;
-                var task = new Task<IYubicoResponse>(() => DoVerify(thisUrl, userAgent), cancellation.Token);
-                task.ContinueWith(t => { }, TaskContinuationOptions.OnlyOnFaulted);
-                tasks.Add(task);
-                task.Start();
+                tasks.Add(DoVerifyAsync(url, userAgent, tokenSource.Token));
             }
 
             while (tasks.Count != 0)
             {
-                // TODO: handle exceptions from the verify task. Better to be able to propagate cause for error.
-                var completed = Task.WaitAny(tasks.Cast<Task>().ToArray());
-                var task = tasks[completed];
-                tasks.Remove(task);
-                if (task.Result != null)
+                var completedTask = await Task.WhenAny(tasks.ToArray());
+                tasks.Remove(completedTask);
+                if (completedTask.Result != null)
                 {
-                    cancellation.Cancel();
-                    return task.Result;
+                    tokenSource.Cancel();
+                    return completedTask.Result;
                 }
             }
 
             return null;
         }
 
-        private static IYubicoResponse DoVerify(string url, string userAgent)
+        private async static Task<IYubicoResponse> DoVerifyAsync(string url, string userAgent, CancellationToken token)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);            
-            
-#if !NETCORE
-            if (userAgent == null)
+            var request = new HttpRequestMessage
             {
-                request.UserAgent = "YubicoDotNetClient version:" + Assembly.GetExecutingAssembly().GetName().Version;
-            }
-            else
-            {
-                request.UserAgent = userAgent;
-            }
-            
-            request.Timeout = 15000;
-#endif
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+            request.Headers.Add("User-Agent", userAgent ?? "YubicoDotNetClient");
 
-            HttpWebResponse rawResponse;
             try
             {
-#if NETCORE
-                rawResponse = (HttpWebResponse)request.GetResponseAsync().Result;
-#else
-                rawResponse = (HttpWebResponse)request.GetResponse();
-#endif
+                var response = await _httpClient.SendAsync(request, token);
+
+                token.ThrowIfCancellationRequested();
+                if(!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                IYubicoResponse yubiResponse;
+                var responseContent = await response.Content.ReadAsStringAsync();
+                token.ThrowIfCancellationRequested();
+
+                try
+                {
+                    yubiResponse = new YubicoResponse(responseContent, url);
+                }
+                catch (ArgumentException)
+                {
+                    return null;
+                }
+
+                token.ThrowIfCancellationRequested();
+                if (yubiResponse.Status == YubicoResponseStatus.ReplayedRequest)
+                {
+                    //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
+                    return null;
+                }
+
+                return yubiResponse;
             }
-            catch (WebException)
+            catch (TaskCanceledException)
             {
+                // timeout
                 return null;
             }
-
-            using (var dataStream = rawResponse.GetResponseStream())
-            {
-                if (dataStream != null)
-                {
-                    using (var reader = new StreamReader(dataStream))
-                    {
-                        IYubicoResponse response;
-                        
-                        try
-                        {
-                            response = new YubicoResponse(reader.ReadToEnd(), url);
-                        }
-                        catch (ArgumentException)
-                        {
-                            return null;
-                        }
-
-                        if (response.Status == YubicoResponseStatus.ReplayedRequest)
-                        {
-                            //throw new YubicoValidationException("Replayed request, this otp & nonce combination has been seen before.");
-                            return null;
-                        }
-
-                        return response;
-                    }
-                }
-            }
-
-            throw new YubicoValidationException();
         }
     }
 }

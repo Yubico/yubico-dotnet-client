@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YubicoDotNetTest", "YubicoD
 		{5A3B20FE-E882-42C6-BAE2-DF0E3736CD41} = {5A3B20FE-E882-42C6-BAE2-DF0E3736CD41}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YubicoDotNetClient.NetCore", "YubicoDotNetClient.NetCore\YubicoDotNetClient.NetCore.csproj", "{D7587393-DB2B-4609-AD0A-0271DE057FC8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,18 +40,6 @@ Global
 		{7415A9A7-CC08-461B-980C-78477494C779}.Release|Mixed Platforms.Build.0 = Release|x86
 		{7415A9A7-CC08-461B-980C-78477494C779}.Release|x86.ActiveCfg = Release|x86
 		{7415A9A7-CC08-461B-980C-78477494C779}.Release|x86.Build.0 = Release|x86
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Debug|x86.Build.0 = Debug|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|x86.ActiveCfg = Release|Any CPU
-		{D7587393-DB2B-4609-AD0A-0271DE057FC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

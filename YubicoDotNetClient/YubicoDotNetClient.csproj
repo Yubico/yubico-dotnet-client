@@ -11,7 +11,7 @@
     <AssemblyName>YubicoDotNetClient</AssemblyName>
     <PackageId>YubicoDotNetClient</PackageId>
     <PackageTags>yubico yubikey</PackageTags>
-    <PackageIconUrl>http://i.imgur.com/v7poxNh.png</PackageIconUrl>
+    <PackageIconUrl></PackageIconUrl>
     <PackageProjectUrl>https://github.com/Yubico/yubico-dotnet-client</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Yubico/yubico-dotnet-client/blob/master/COPYING</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>

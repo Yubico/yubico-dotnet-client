@@ -30,18 +30,55 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
+
 
 namespace YubicoDotNetClient
 {
     public sealed class YubicoValidate
     {
-        private static HttpClient _httpClient = new HttpClient
+        private static HttpClient _httpClient = new HttpClient(new ErrorRetryHandler(new HttpClientHandler()))
         {
             Timeout = new TimeSpan(0, 0, 0, 5) // 5 seconds
         };
+
+        private class ErrorRetryHandler : DelegatingHandler
+        {
+            private const int maxRetries = 3;
+            public ErrorRetryHandler(HttpMessageHandler baseHandler) : base(baseHandler)
+            { }
+            
+            protected override async Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                int retries = 0;
+                HttpResponseMessage result = null;
+                List<int> retryableStatusCodes = new List<int>() {
+                                                        400, // BadRequest
+                                                        429, // TooManyRequests
+                                                        500, // InternalServerError
+                                                        502, // BadGateway
+                                                        503, // ServiceUnavailable
+                                                        504, // GatewayTimeout
+                                                        };
+
+                while(retries < maxRetries)
+                {
+                    retries++;
+                    result = await base.SendAsync(request, cancellationToken);
+                    if (!retryableStatusCodes.Contains((int)result.StatusCode))
+                    {
+                        return result;
+                    }
+                    await Task.Delay(500);
+                }
+                return result;
+            }
+        }
 
         public async static Task<IYubicoResponse> ValidateAsync(IEnumerable<string> urls, string userAgent)
         {

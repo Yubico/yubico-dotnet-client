@@ -63,13 +63,9 @@ namespace YubicoDotNetClient
         private string _nonce;
         private string _userAgent;
 
-        private string[] _apiUrls = 
+        private string[] _apiUrls =
         {
-            "https://api.yubico.com/wsapi/2.0/verify",
-            "https://api2.yubico.com/wsapi/2.0/verify",
-            "https://api3.yubico.com/wsapi/2.0/verify",
-            "https://api4.yubico.com/wsapi/2.0/verify",
-            "https://api5.yubico.com/wsapi/2.0/verify"
+            "https://api.yubico.com/wsapi/2.0/verify"
         };
         
         /// <summary>

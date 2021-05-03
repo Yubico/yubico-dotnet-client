@@ -1,5 +1,7 @@
 == Yubico dotnet client ==
 
+NOTE: This project is deprecated and is no longer being maintained. For more information and guidance on how to implement Yubico OTP support in applications, see https://status.yubico.com/2021/04/15/one-api-yubico-com-one-http-get/.
+
 Validation protocol 2.0 client for dotNet.
 To use this with YubiCloud you will need a free clientId and apiKey from https://upgrade.yubico.com/getapikey
 
